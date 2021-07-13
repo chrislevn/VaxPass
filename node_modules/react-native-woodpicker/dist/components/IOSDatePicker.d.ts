@@ -1,0 +1,21 @@
+import { Animated, ViewStyle, GestureResponderEvent } from "react-native";
+import { IOSDisplay, Mode } from "../types/datepicker";
+export declare type Props = {
+    value: Date;
+    show: boolean;
+    mode?: Mode;
+    disabled?: boolean;
+    animationValue: Animated.Value;
+    renderInput: (renderHiddenCompactIOSPicker?: () => JSX.Element) => JSX.Element;
+    renderDoneBar: () => JSX.Element;
+    togglePicker: (event: GestureResponderEvent) => void;
+    containerStyle?: ViewStyle;
+    locale?: string;
+    timeZoneOffsetInMinutes?: number;
+    textColor?: string;
+    onChange: (_: any, newDate?: Date | undefined) => void;
+    display?: IOSDisplay;
+    iosCompactHiddenStyle?: ViewStyle;
+};
+declare const IOSDatePicker: ({ show, disabled, animationValue, display, renderInput, renderDoneBar, togglePicker, containerStyle, iosCompactHiddenStyle, ...pickerProps }: Props) => JSX.Element;
+export default IOSDatePicker;
