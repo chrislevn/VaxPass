@@ -57,7 +57,7 @@ const Auth = () => {
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="LoginUser">
+      <Stack.Navigator initialRouteName="DashboardUser">
         <Stack.Screen name="LoginUser" component={LoginUser} />
         <Stack.Screen name="LoginProvider" component={LoginProvider} />
         <Stack.Screen name="DashboardUser" component={DashboardUser} />

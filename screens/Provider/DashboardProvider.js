@@ -5,6 +5,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import RNPickerSelect from 'react-native-picker-select';
 
+import SelectDropdown from 'react-native-select-dropdown'
+
 import firebase from '../../database/firebase';
 
 function DashboardProvider({navigation}) {
@@ -13,29 +15,8 @@ function DashboardProvider({navigation}) {
     const [dose, setDose] = useState('');
     const [provider, setProvider] = useState('');
 
-    const DropdownDose = () => {
-        return (
-            <RNPickerSelect
-                onValueChange={(value) => setDose(value)}
-                items={[
-                    { label: '1st', value: '1st' },
-                    { label: '2nd', value: '2nd' },
-                ]}
-            />
-        );
-    };
-
-    const DropdownProvider = () => {
-        return (
-            <RNPickerSelect
-                onValueChange={(value) => setProvider(value)}
-                items={[
-                    { label: 'Moderna', value: 'Moderna' },
-                    { label: 'Pifzer', value: 'Pifzer' },
-                ]}
-            />
-        );
-    };
+    const providers = ["Moderna", "Pifzer"]
+    const doses = ["1st", "2nd"]
 
     const MakeID = (length) => {
         var result           = '';
@@ -94,9 +75,24 @@ function DashboardProvider({navigation}) {
             <Text> {currentDate} </Text>
             <Text> Your patient info </Text>
             <Text> Provider </Text>
-            <DropdownProvider/>
+
+            <SelectDropdown
+                data={providers}
+                onSelect={(selectedItem) => {
+                    setProvider(selectedItem)
+                }}
+                defaultButtonText = "Select provider"
+            />
+            
             <Text> Dose </Text>
-            <DropdownDose/>
+            
+            <SelectDropdown
+                data={doses}
+                onSelect={(selectedItem) => {
+                    setDose(selectedItem)
+                }}
+                defaultButtonText = "Select dose"
+            />
 
             <Button
                 title="Generate code"

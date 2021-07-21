@@ -49,25 +49,25 @@ function DashboardUser({navigation}) {
         .catch(error => console.log(error.message))
       }
 
-    const UserUpload = async (currentDate, dose, provider, hospital) => {
+    const UserUpload = async (currentDate, hospital, dose, provider) => {
         const user = firebase.auth().currentUser; 
         const storageRef = firebase.database().ref(`users/` + `${user.uid}`);
-        storageRef.set({
-            dose: dose,
-            provider: provider,
-            date: currentDate, 
-            hospital: hospital
-          });
         
-        if (dose == '1st') { 
-            if (provider == 'Johnson & Johnson') {
-                setVacResult("Fully vaccinated")
-            } else { 
-                setVacResult("Half vaccinated");
-            }
-        } else { 
-            setVacResult("Fully vaccinated");
-        }
+        if (dose == '1st') {
+            storageRef.update({
+                '1st': {
+                    provider: provider,
+                    date: currentDate, 
+                    hospital: hospital
+                }});
+        } else {
+            storageRef.update({
+                '2nd': {
+                provider: provider,
+                date: currentDate, 
+                hospital: hospital
+            }});
+        };
     }
 
       
@@ -77,15 +77,32 @@ function DashboardUser({navigation}) {
             const storageRef = firebase.database().ref(`providers/` + `${currentDate}/` + `${code}`);
             
             storageRef.on('value', (snapshot) => {
-                const data = snapshot.val();
-                setProvider(data.provider); 
-                setDose(data.dose);
-                UserUpload(currentDate, data.dose, data.provider, '');
+                const data = snapshot.val(); 
+
+                try {
+                    setProvider(data.provider); 
+                    setDose(data.dose);
+                    UserUpload(currentDate, '', data.dose, data.provider);
+
+                    if (data.dose == '1st') { 
+                        if (data.provider == 'Johnson & Johnson') {
+                            setVacResult("Fully vaccinated")
+                        } else { 
+                            
+                            setVacResult("Half vaccinated");
+                        }
+                    } else { 
+                        setVacResult("Fully vaccinated");
+                    }
+
+                    setVerify(true);
+                    navigation.navigate('DigitalCard', {provider: provider, dose: dose, testResult: vaccinateResult});
+
+                } catch(error){
+                    Alert.alert('Invalid code')
+                }
               });
             
-            
-            setVerify(true);
-            navigation.navigate('DigitalCard', {provider: provider, dose: dose, testResult: vaccinateResult});
         } catch(error) { 
             Alert.alert(error.message); 
             setVerify(false);

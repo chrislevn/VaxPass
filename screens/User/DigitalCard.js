@@ -6,6 +6,7 @@ import firebase from '../../database/firebase';
 
 import QRCode from 'react-native-qrcode-svg';
 
+
 function DigitalCard({ route, navigation }) {
     const {testResult} = route.params;
     const [name, setName] = useState(''); 
@@ -13,31 +14,33 @@ function DigitalCard({ route, navigation }) {
 
     const [firstProvider, setfirstProvider] = useState(''); 
     const [firstDate, setfirstDate] = useState(''); 
+    const [firstClinic, setFirstClinic] = useState('');
 
     const [secondDoseCheck, setSecond] = useState(false); 
     const [secondProvider, setSecondProvider] = useState(''); 
     const [secondDate, setSecondDate] = useState(''); 
+    const [secondClinic, setSecondClinic] = useState('');
 
     useEffect(() => {
         firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-
-
             setName(user.displayName);
             setUID(user.uid); 
 
             const storageRef = firebase.database().ref(`users/` + `${user.uid}`);
             storageRef.on('value', (snapshot) => {
                 const data = snapshot.val();
-                if (data.length == 2) {
-                    setSecond(true);
-                    setSecondDate(data.date); 
-                    setSecondProvider(data.provider);
-                } 
+   
+                setfirstDate(data['1st'].date); 
+                setfirstProvider(data['1st'].provider);
+                setFirstClinic(data['2nd'].date);
 
-                if (data.dose == '1st') {
-                    setfirstDate(data.date); 
-                    setfirstProvider(data.provider);
+                setSecondDate(data['2nd'].date); 
+                setSecondProvider(data['2nd'].provider);
+                setSecondClinic(data['2nd'].date);
+
+                if (secondProvider != null) {
+                    setSecond(true);
                 }
               });
             }
@@ -53,14 +56,16 @@ function DigitalCard({ route, navigation }) {
                 <Card.Content>
                     <Card.Content>
                         <Title>1st Dose</Title>
-                        <Paragraph>{firstProvider}</Paragraph>
-                        <Paragraph>{firstDate}</Paragraph>
+                        <Paragraph>Provider: {firstProvider}</Paragraph>
+                        <Paragraph>Date: {firstDate}</Paragraph>
+                        <Paragraph>Clinic: {firstClinic}</Paragraph>
                     </Card.Content>
                     {secondDoseCheck && 
                         <Card.Content>
                             <Title>2st Dose</Title>
-                            <Paragraph>{secondProvider}</Paragraph>
-                            <Paragraph>{secondDate}</Paragraph>
+                            <Paragraph>Provider: {secondProvider}</Paragraph>
+                            <Paragraph>Date: {secondDate}</Paragraph>
+                            <Paragraph>Clinic: {secondClinic}</Paragraph>
                         </Card.Content>
                     }
                 </Card.Content>
