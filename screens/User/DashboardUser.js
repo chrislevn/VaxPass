@@ -1,20 +1,45 @@
 import React, { Component, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Alert } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import firebase from '../../database/firebase';
+import { set } from 'react-native-reanimated';
 
 function DashboardUser({navigation}) {
     const [uid, setUID] = useState(null); 
     const [input_text, setInput] = useState(''); 
+    const [currentDate, setCurrentDate] = useState('');
     const [displayName, setDisplayName] = useState(''); 
     const [isVerify, setVerify] = useState(true);
+    const [dose, setDose] = useState(''); 
+    const [provider, setProvider] = useState(''); 
+    const [vaccinateResult, setVacResult] = useState('');
 
     useEffect(() => {
-        setDisplayName(firebase.auth().currentUser.displayName);
-        setUID(firebase.auth().currentUser.uid); 
+        // setCode(MakeID(6));
+        var date = new Date().getDate(); //Current Date
+        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var monthName = months[new Date().getMonth()]; //Current Month
+        var year = new Date().getFullYear(); //Current Year
+        var hours = new Date().getHours(); //Current Hours
+        var min = new Date().getMinutes(); //Current Minutes
+        var sec = new Date().getSeconds(); //Current Seconds
+        
+        setCurrentDate(
+            monthName + ' ' + date + ', ' + year 
+        );
+
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+              setDisplayName(user.displayName);
+              setUID(user.uid); 
+            }
+        });
+
+        // setDisplayName(firebase.auth().currentUser.displayName);
+        // setUID(firebase.auth().currentUser.uid); 
     });
 
     const signOut = () => {
@@ -23,12 +48,46 @@ function DashboardUser({navigation}) {
         })
         .catch(error => console.log(error.message))
       }
+
+    const UserUpload = async (currentDate, dose, provider, hospital) => {
+        const user = firebase.auth().currentUser; 
+        const storageRef = firebase.database().ref(`users/` + `${user.uid}`);
+        storageRef.set({
+            dose: dose,
+            provider: provider,
+            date: currentDate, 
+            hospital: hospital
+          });
+        
+        if (dose == '1st') { 
+            if (provider == 'Johnson & Johnson') {
+                setVacResult("Fully vaccinated")
+            } else { 
+                setVacResult("Half vaccinated");
+            }
+        } else { 
+            setVacResult("Fully vaccinated");
+        }
+    }
+
       
     const verify = (code) => { 
-        if (code == '123DFG') { 
+        const user = firebase.auth().currentUser; 
+        try {
+            const storageRef = firebase.database().ref(`providers/` + `${currentDate}/` + `${code}`);
+            
+            storageRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                setProvider(data.provider); 
+                setDose(data.dose);
+                UserUpload(currentDate, data.dose, data.provider, '');
+              });
+            
+            
             setVerify(true);
-            navigation.navigate('DigitalCard');
-        } else { 
+            navigation.navigate('DigitalCard', {provider: provider, dose: dose, testResult: vaccinateResult});
+        } catch(error) { 
+            Alert.alert(error.message); 
             setVerify(false);
         }
     } 

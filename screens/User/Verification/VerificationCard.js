@@ -29,26 +29,33 @@ function VerificationCard({ navigation }) {
           quality: 1,
         });
     
-        console.log(result);
+        // console.log(result);
 
         if (!result.cancelled) {
           setImage(result.uri);
-          uploadImage(result.uri, 'test-image')
+          uploadImage(result.uri, firebase.auth().currentUser.uid)
             .then(() => {
                 console.log('it work')
             })
             .catch(error => {
-                console.log('it does not work')
-                console.error(error)
+                console.log('it does not work');
+                console.error(error);
             })
         }
       };
 
-    const uploadImage = async (uri, imageName) => {
+    const uploadImage = async (uri, fileName) => {
         const response = await fetch(uri);
         const blob = await response.blob();
         const storageRef = firebase.storage().ref();
-        const ref = storageRef.child(`card/${imageName}`);
+        const ref = storageRef.child(`users/user-${fileName}/card-${fileName}`);
+        // const update = {
+        //   photoURL: url,
+        // };
+        // console.log("Okay", user.uid, imageName);
+        // console.log("test photoURL", photoURL);
+
+        // await firebase.auth().currentUser.updateProfile(update);
 
         return ref.put(blob);
     }
@@ -56,8 +63,8 @@ function VerificationCard({ navigation }) {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-            <Button title="Pick an image from camera roll" onPress={pickImage} />
-            <Button title="Next for verification" onPress={() => navigation.navigate('Card')} />
+            <Button title="Pick an card image from camera roll" onPress={pickImage} />
+            <Button title="Next for verification ID" onPress={() => navigation.navigate('VerificationID')} />
         </View>
     );
 }

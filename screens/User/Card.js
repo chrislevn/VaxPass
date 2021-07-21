@@ -11,10 +11,11 @@ function Card({ navigation }) {
 
     useEffect(() => {
         (async () => {
-            const ref = firebase.storage().ref('card/test-image');
-            const url = await ref.getDownloadURL();
+            const user = firebase.auth().currentUser;   
+            const url = await firebase.storage().ref(`users/user-${user.uid}/card-${user.uid}`).getDownloadURL(); 
+
             setImage(url);
-            console.log('test', image);
+            // console.log('test', url);
         })();
       }, []);
 

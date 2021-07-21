@@ -13,6 +13,7 @@ import LoginProvider from './screens/Login/LoginProvider';
 import DashboardUser from './screens/User/DashboardUser.js'; 
 import DashboardProvider from './screens/Provider/DashboardProvider';
 import SignUpUser from './screens/Signup/SignUpUser';
+import SignUpProvider from './screens/Signup/SignUpProvider';
 import GenerateCodeScreen from './screens/Provider/GenerateCodeScreen';
 import SplashScreen from './CovidPass/Components/SplashScreen';
 import DrawerNavigationRoutes from './CovidPass/Components/DrawerNavigationRoutes';
@@ -56,13 +57,14 @@ const Auth = () => {
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="DashboardUser">
+      <Stack.Navigator initialRouteName="LoginUser">
         <Stack.Screen name="LoginUser" component={LoginUser} />
         <Stack.Screen name="LoginProvider" component={LoginProvider} />
         <Stack.Screen name="DashboardUser" component={DashboardUser} />
         <Stack.Screen name="DashboardProvider" component={DashboardProvider} />
         <Stack.Screen name="GenerateCodeScreen" component={GenerateCodeScreen} />
         <Stack.Screen name="SignUpUser" component={SignUpUser} />
+        <Stack.Screen name="SignUpProvider" component={SignUpProvider} />
         <Stack.Screen name="SplashScreen" component={SplashScreen} options={{headerShown: false}} />
         <Stack.Screen name="Auth" component={Auth} options={{headerShown: false}}/>
         <Stack.Screen name="DrawerNavigationRoutes" component={DrawerNavigationRoutes} options={{headerShown: false}} />
