@@ -11,6 +11,7 @@ function ID({ navigation }) {
 
     useEffect(() => {
         (async () => {
+        
             const user = firebase.auth().currentUser;   
             const url = await firebase.storage().ref(`users/user-${user.uid}/id-${user.uid}`).getDownloadURL(); 
 

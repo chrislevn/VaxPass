@@ -1,11 +1,30 @@
 import React, { Component, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, Alert } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Alert, Pressable } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import firebase from '../../database/firebase';
 import { set } from 'react-native-reanimated';
+
+import {
+    useFonts,
+    RobotoMono_100Thin,
+    RobotoMono_200ExtraLight,
+    RobotoMono_300Light,
+    RobotoMono_400Regular,
+    RobotoMono_500Medium,
+    RobotoMono_600SemiBold,
+    RobotoMono_700Bold,
+    RobotoMono_100Thin_Italic,
+    RobotoMono_200ExtraLight_Italic,
+    RobotoMono_300Light_Italic,
+    RobotoMono_400Regular_Italic,
+    RobotoMono_500Medium_Italic,
+    RobotoMono_600SemiBold_Italic,
+    RobotoMono_700Bold_Italic,
+  } from '@expo-google-fonts/roboto-mono';
+
 
 function DashboardUser({navigation}) {
     const [uid, setUID] = useState(null); 
@@ -16,6 +35,24 @@ function DashboardUser({navigation}) {
     const [dose, setDose] = useState(''); 
     const [provider, setProvider] = useState(''); 
     const [vaccinateResult, setVacResult] = useState('');
+
+    let [fontsLoaded] = useFonts({
+        RobotoMono_100Thin,
+        RobotoMono_200ExtraLight,
+        RobotoMono_300Light,
+        RobotoMono_400Regular,
+        RobotoMono_500Medium,
+        RobotoMono_600SemiBold,
+        RobotoMono_700Bold,
+        RobotoMono_100Thin_Italic,
+        RobotoMono_200ExtraLight_Italic,
+        RobotoMono_300Light_Italic,
+        RobotoMono_400Regular_Italic,
+        RobotoMono_500Medium_Italic,
+        RobotoMono_600SemiBold_Italic,
+        RobotoMono_700Bold_Italic,
+    });
+
 
     useEffect(() => {
         // setCode(MakeID(6));
@@ -44,7 +81,10 @@ function DashboardUser({navigation}) {
 
     const signOut = () => {
         firebase.auth().signOut().then(() => {
-          navigation.navigate('LoginUser')
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'LoginUser' }],
+          });
         })
         .catch(error => console.log(error.message))
       }
@@ -59,14 +99,18 @@ function DashboardUser({navigation}) {
                     provider: provider,
                     date: currentDate, 
                     hospital: hospital
-                }});
+                }, 
+                'status': 'Half vaccinated'
+            });
         } else {
             storageRef.update({
                 '2nd': {
-                provider: provider,
-                date: currentDate, 
-                hospital: hospital
-            }});
+                    provider: provider,
+                    date: currentDate, 
+                    hospital: hospital
+                }, 
+                'status': 'Fully vaccinated'
+            });
         };
     }
 
@@ -82,7 +126,7 @@ function DashboardUser({navigation}) {
                 try {
                     setProvider(data.provider); 
                     setDose(data.dose);
-                    UserUpload(currentDate, '', data.dose, data.provider);
+                    UserUpload(currentDate, 'TechPoint', data.dose, data.provider);
 
                     if (data.dose == '1st') { 
                         if (data.provider == 'Johnson & Johnson') {
@@ -120,14 +164,20 @@ function DashboardUser({navigation}) {
             placeholder="Enter the code"
         />
         {!isVerify && <Text> Type again! </Text>}
-        <Button title="Submit" onPress={() => verify(input_text)} />
-        <Button title="Enter the code manually" onPress={() => navigation.navigate('Information')} />
+        <Pressable style={styles.button} onPress={() => verify(input_text)}>
+            <Text style={styles.buttonText}> Submit </Text>
+        </Pressable>
 
-        <Button
-        color="#3740FE"
-        title="Logout"
-        onPress={() => signOut()}
-        />
+        <Text> ---- or ---- </Text>
+
+        <Pressable style={styles.button} onPress={() => navigation.navigate('Information')}>
+            <Text style={styles.buttonText}> Enter the code manually </Text>
+        </Pressable>
+
+       
+        <Pressable style={styles.logoutButton} onPress={signOut()}>
+            <Text style={styles.buttonText}> Log out </Text>
+        </Pressable>
     </View>
     )
   };
@@ -143,13 +193,50 @@ container: {
     padding: 35,
     backgroundColor: '#fff'
 },
+button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: 'black',
+    borderRadius: 30, 
+    margin: 5
+}, 
+
+buttonText: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'white',
+},
+logoutButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: 'black',
+    borderRadius: 30, 
+    margin: 5
+}, 
+
 textStyle: {
-    fontSize: 15,
+    fontFamily: 'RobotoMono_700Bold',
+    fontSize: 30,
     marginBottom: 20
 },
 input: {
     height: 40,
+    width: 300,
     margin: 12,
     borderWidth: 1,
-}
+    alignItems: 'center', 
+    justifyContent: 'center',
+    display: 'flex', 
+    alignContent: 'center', 
+    }
 });

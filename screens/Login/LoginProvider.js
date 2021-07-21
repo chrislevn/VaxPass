@@ -2,6 +2,9 @@ import React, { Component, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator } from 'react-native';
 import firebase from '../../database/firebase';
 
+import { useFonts, Inter_900Black } from '@expo-google-fonts/inter';
+
+
 function LoginProvider({navigation}) {
   const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState(''); 
@@ -9,6 +12,9 @@ function LoginProvider({navigation}) {
   // const [displayName, setDisplayName] = useState('');
   const [isLoading, setLoading] = useState(false); 
 
+  let [fontsLoaded] = useFonts({
+    Inter_900Black,
+  });
 
   const LoginProvider = () => {
     if(email === '' && password === '') {
@@ -45,22 +51,31 @@ function LoginProvider({navigation}) {
 
   return (
     <View style={styles.container}> 
+      <Text style={{ fontFamily: 'Inter_900Black', fontSize: 30 }}>Login as provider</Text>
+      <Text style={{ fontFamily: 'Inter_900Black', fontSize: 20 }}>Referral code</Text>
      <TextInput
+        autoCapitalize="none"
+        autoCorrect={false}
         style={styles.inputStyle}
-        placeholder="Referral Code"
+        placeholder="Your referral code"
         value={referralCode}
         onChangeText={(val) => setReferralCode(val)}
       />
        
+       <Text style={{ fontFamily: 'Inter_900Black', fontSize: 20 }}>Email</Text>
       <TextInput
+        autoCapitalize="none"
+        autoCorrect={false}
         style={styles.inputStyle}
-        placeholder="Email"
+        placeholder="Your email"
         value={email}
         onChangeText={(val) => setEmail(val)}
       />
+
+      <Text style={{ fontFamily: 'Inter_900Black', fontSize: 20 }}>Password</Text>
       <TextInput
         style={styles.inputStyle}
-        placeholder="Password"
+        placeholder="Your password"
         value={password}
         onChangeText={(val) => setPassword(val)}
         maxLength={15}
@@ -72,12 +87,12 @@ function LoginProvider({navigation}) {
         onPress={() => LoginProvider()}
       />   
 
-      <Button 
+      <Text 
         color="#3740FE"
         style={styles.loginText}
-        onPress={() => navigation.navigate('SignUpProvider')}
-        title="Create an account as a provider"
-      />  
+        onPress={() => navigation.navigate('SignUpProvider')}>
+        Don't have account? Create an account as a provider
+      </Text>
     </View>
   )};
 

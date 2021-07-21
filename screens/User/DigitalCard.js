@@ -6,8 +6,7 @@ import firebase from '../../database/firebase';
 
 import QRCode from 'react-native-qrcode-svg';
 
-
-function DigitalCard({ route, navigation }) {
+function DigitalCard({route, navigation}) {
     const {testResult} = route.params;
     const [name, setName] = useState(''); 
     const [uid, setUID] = useState('');
@@ -33,18 +32,18 @@ function DigitalCard({ route, navigation }) {
    
                 setfirstDate(data['1st'].date); 
                 setfirstProvider(data['1st'].provider);
-                setFirstClinic(data['2nd'].date);
+                setFirstClinic(data['2nd'].hosptal);
 
                 setSecondDate(data['2nd'].date); 
                 setSecondProvider(data['2nd'].provider);
-                setSecondClinic(data['2nd'].date);
+                setSecondClinic(data['2nd'].hosptal);
 
                 if (secondProvider != null) {
                     setSecond(true);
                 }
               });
             }
-        });
+        }); 
     })
 
     var userProfile = `Name: ${name} + Status: ${testResult}`    
@@ -53,6 +52,7 @@ function DigitalCard({ route, navigation }) {
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Card>
                 <Card.Title title={name} subtitle={testResult} />
+                <Button title="Edit" onPress={() => navigation.navigate('DashboardUser')} />
                 <Card.Content>
                     <Card.Content>
                         <Title>1st Dose</Title>

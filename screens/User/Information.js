@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, Platform } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Platform, Alert } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -9,9 +9,30 @@ import SelectDropdown from 'react-native-select-dropdown';
 
 import firebase from '../../database/firebase';
 
+import {
+    useFonts,
+    RobotoMono_100Thin,
+    RobotoMono_200ExtraLight,
+    RobotoMono_300Light,
+    RobotoMono_400Regular,
+    RobotoMono_500Medium,
+    RobotoMono_600SemiBold,
+    RobotoMono_700Bold,
+    RobotoMono_100Thin_Italic,
+    RobotoMono_200ExtraLight_Italic,
+    RobotoMono_300Light_Italic,
+    RobotoMono_400Regular_Italic,
+    RobotoMono_500Medium_Italic,
+    RobotoMono_600SemiBold_Italic,
+    RobotoMono_700Bold_Italic,
+  } from '@expo-google-fonts/roboto-mono';
+
+
+
 function Information({navigation}) {
     const [text, setText] = useState('');
     const providers = ["Moderna", "Pifzer"]; 
+    const [vaccinateResult, setVacResult] = useState('');
 
     //Dose
     const [dose, setDose] = useState(''); 
@@ -37,6 +58,24 @@ function Information({navigation}) {
         setFirstDate(currentDate);
     //   console.log(currentDate);
     };
+
+
+    let [fontsLoaded] = useFonts({
+        RobotoMono_100Thin,
+        RobotoMono_200ExtraLight,
+        RobotoMono_300Light,
+        RobotoMono_400Regular,
+        RobotoMono_500Medium,
+        RobotoMono_600SemiBold,
+        RobotoMono_700Bold,
+        RobotoMono_100Thin_Italic,
+        RobotoMono_200ExtraLight_Italic,
+        RobotoMono_300Light_Italic,
+        RobotoMono_400Regular_Italic,
+        RobotoMono_500Medium_Italic,
+        RobotoMono_600SemiBold_Italic,
+        RobotoMono_700Bold_Italic,
+    });
 
     const onChangeSecond = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -115,6 +154,13 @@ function Information({navigation}) {
     const UserUpload = async (firstDate, secondDate, firstHospital, secondHospital, provider) => {
         const user = firebase.auth().currentUser; 
         const storageRef = firebase.database().ref(`users/` + `${user.uid}`);
+        var testResult = ''; 
+        if (secondDate != null && secondHospital !=  null) {
+            testResult = 'Fully vaccinated'
+        } else {
+            testResult = 'Half vaccinated'
+        }
+
         storageRef.set({
             '1st': {
                 provider: provider,
@@ -125,20 +171,34 @@ function Information({navigation}) {
                 provider: provider,
                 date: secondDate, 
                 hospital: secondHospital
-                }
+            }, 
+            'status': testResult
         });
     }
 
     //Finish Editing
-    const DoneUpload = () => {
-        
+    const DoneUpload = () => {       
+        if (firstDate != null) {
+            if (secondDate != null) {
+                setVacResult('Fully vaccinated');
+            } else {
+                setVacResult('Half vaccinated');
+            }
+        }
         UserUpload(handleTime(firstDate), handleTime(secondDate), firstClinic, secondClinic, dose); 
-        navigation.navigate('VerificationCard'); 
+
+        if (dose != null && firstDate != null && firstClinic != null) {
+                navigation.navigate('VerificationCard', {testResult: vaccinateResult}); 
+            } else {
+                Alert.alert('Missing information. Try again');
+            }
     } 
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text> Vaccination Provider </Text>
+            <Text style={{fontFamily: 'RobotoMono_700Bold', fontSize: 30}}> Information </Text>
+            
+            <Text style={{fontFamily: 'RobotoMono_400Regular', fontSize: 20}}> Vaccination Provider </Text>
             <SelectDropdown
                 data={providers}
                 onSelect={(selectedItem) => {
@@ -147,8 +207,9 @@ function Information({navigation}) {
                 defaultButtonText = "Select dose"
             />
             
-            <Text> 1st Dose </Text>
+            <Text style={{fontFamily: 'RobotoMono_400Regular', fontSize: 20}}> 1st Dose </Text>
             <TextInput
+                autoCorrect={false}
                 style={{height: 40}}
                 placeholder="Your clinic's name"
                 onChangeText={text => setFirstClinic(text)}
@@ -172,8 +233,9 @@ function Information({navigation}) {
                 </View>
             }
 
-            <Text> 2nd Dose (optional) </Text>
+            <Text style={{fontFamily: 'RobotoMono_400Regular', fontSize: 20}}>2nd Dose (optional) </Text>
             <TextInput
+                autoCorrect={false}
                 style={{height: 40}}
                 placeholder="Your clinic's name"
                 onChangeText={text => setSecondClinic(text)}
@@ -198,7 +260,8 @@ function Information({navigation}) {
             }
 
             <Button title="Next" onPress={() => DoneUpload()} />
-            <Button title="Logout" onPress={() => navigation.navigate('LoginUser')} />
+            <Text> ----- or -----</Text>
+            <Button title="Logout" onPress={() => navigation.navigate('LoginUser', {testResult: vaccinateResult})} />
            
         </View>
         

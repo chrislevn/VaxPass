@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import firebase from '../../database/firebase';
 import ID from '../User/ID';
+import { useFonts, Inter_900Black } from '@expo-google-fonts/inter';
 
 // Screens 
 function SignUpProvider({navigation}) {
@@ -16,6 +17,10 @@ function SignUpProvider({navigation}) {
   const [cardVerify, setCardVerify] = useState(''); 
   const [IdVerify, setIdVerify] = useState(''); 
   const [isLoading, setLoading] = useState(false); 
+
+  let [fontsLoaded] = useFonts({
+    Inter_900Black,
+  });
 
   const registerUser = () => {
     if(email === '' && password === '') {
@@ -38,7 +43,9 @@ function SignUpProvider({navigation}) {
         setDisplayName(''); 
         setEmail(''); 
         setPassword(''); 
-        navigation.navigate('LoginProvider')
+        if (referralCode == '3F56AC'){
+            navigation.navigate('LoginProvider')
+        } else { Alert.alert('Invalid referral code')}   
       })
       .catch(error => Alert.alert(error.message))      
     }
@@ -63,6 +70,7 @@ function SignUpProvider({navigation}) {
             onChangeText={(val) => setReferralCode(val)}
         />  
       <TextInput
+        autoCorrect={false}
         style={styles.inputStyle}
         placeholder="Name"
         value={displayName}
@@ -70,6 +78,8 @@ function SignUpProvider({navigation}) {
         onChangeText={(val) => setDisplayName(val)}
       />      
       <TextInput
+        autoCapitalize="none"
+        autoCorrect={false}
         style={styles.inputStyle}
         placeholder="Email"
         value={email}

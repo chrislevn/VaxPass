@@ -101,7 +101,10 @@ function DashboardProvider({navigation}) {
 
             <Button
                 title="Logout"
-                onPress={() => navigation.navigate('LoginUser')}
+                onPress={() => navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'LoginUser' }],
+                  })}
             />
         </View>
     );

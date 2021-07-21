@@ -7,6 +7,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import firebase from '../../database/firebase';
 import ID from '../User/ID';
 
+import logo from '../../assets/Logo/logo.png'; 
+// import { useFonts } from 'expo-font';
+import { useFonts, Inter_900Black } from '@expo-google-fonts/inter';
+
+
 // Screens 
 function SignUpUser({navigation}) {
   const [email, setEmail] = useState(''); 
@@ -15,6 +20,11 @@ function SignUpUser({navigation}) {
   const [cardVerify, setCardVerify] = useState(''); 
   const [IdVerify, setIdVerify] = useState(''); 
   const [isLoading, setLoading] = useState(false); 
+
+  let [fontsLoaded] = useFonts({
+    Inter_900Black,
+  });
+
 
   const registerUser = () => {
     if(email === '' && password === '') {
@@ -54,23 +64,29 @@ function SignUpUser({navigation}) {
     // });
   return (
     <View style={styles.container}>  
+      <Text style={{ fontFamily: 'Inter_900Black', fontSize: 30 }}>Sign-up</Text>
+      <Text style={{ fontFamily: 'Inter_900Black', fontSize: 20 }}>Referral code</Text>
       <TextInput
         style={styles.inputStyle}
-        placeholder="Name"
+        placeholder="Your full name"
         value={displayName}
         autoCapitalize = "none"
         onChangeText={(val) => setDisplayName(val)}
-      />      
+      /> 
+      <Text style={{ fontFamily: 'Inter_900Black', fontSize: 20 }}>Email</Text>     
       <TextInput
+        autoCapitalize="none"
+        autoCorrect={false}
         style={styles.inputStyle}
-        placeholder="Email"
+        placeholder="Your email"
         value={email}
         autoCapitalize = "none"
         onChangeText={(val) => setEmail(val)}
       />
+      <Text style={{ fontFamily: 'Inter_900Black', fontSize: 20 }}>Password</Text>     
       <TextInput
         style={styles.inputStyle}
-        placeholder="Password"
+        placeholder="Your password"
         value={password}
         onChangeText={(val) => setPassword(val)}
         maxLength={15}

@@ -58,23 +58,23 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="DashboardUser">
-        <Stack.Screen name="LoginUser" component={LoginUser} />
-        <Stack.Screen name="LoginProvider" component={LoginProvider} />
-        <Stack.Screen name="DashboardUser" component={DashboardUser} />
-        <Stack.Screen name="DashboardProvider" component={DashboardProvider} />
-        <Stack.Screen name="GenerateCodeScreen" component={GenerateCodeScreen} />
-        <Stack.Screen name="SignUpUser" component={SignUpUser} />
-        <Stack.Screen name="SignUpProvider" component={SignUpProvider} />
-        <Stack.Screen name="SplashScreen" component={SplashScreen} options={{headerShown: false}} />
-        <Stack.Screen name="Auth" component={Auth} options={{headerShown: false}}/>
+        <Stack.Screen name="LoginUser" component={LoginUser} options={{headerShown: false}} />
+        <Stack.Screen name="LoginProvider" component={LoginProvider} options={{headerShown: false}}/>
+        <Stack.Screen name="DashboardUser" component={DashboardUser} options={{headerShown: false}}/>
+        <Stack.Screen name="DashboardProvider" component={DashboardProvider} options={{headerShown: false}}/>
+        <Stack.Screen name="GenerateCodeScreen" component={GenerateCodeScreen} options={{headerShown: false}}/>
+        <Stack.Screen name="SignUpUser" component={SignUpUser} options={{headerShown: false}}/>
+        <Stack.Screen name="SignUpProvider" component={SignUpProvider} options={{headerShown: false}}/>
+        <Stack.Screen name="SplashScreen" component={SplashScreen} options={{headerShown: false}} options={{headerShown: false}}/>
+        <Stack.Screen name="Auth" component={Auth} options={{headerShown: false}} />
         <Stack.Screen name="DrawerNavigationRoutes" component={DrawerNavigationRoutes} options={{headerShown: false}} />
 
-        <Stack.Screen name="VerificationCard" title="Verification Card" component={VerificationCard} />
-        <Stack.Screen name="VerificationID" title="Verification ID" component={VerificationID} />
-        <Stack.Screen name="DigitalCard" title="Digital Card" component={DigitalCard} />
+        <Stack.Screen name="VerificationCard" title="Verification Card" component={VerificationCard} options={{headerShown: false}}/>
+        <Stack.Screen name="VerificationID" title="Verification ID" component={VerificationID} options={{headerShown: false}}/>
+        <Stack.Screen name="DigitalCard" title="Digital Card" component={DigitalCard} options={{headerShown: false}}/>
         <Stack.Screen name="Card" title="Card" component={Card} />
-        <Stack.Screen name="ID" title="ID" component={ID} />
-        <Stack.Screen name="Information" title="Information" component={Information} />
+        <Stack.Screen name="ID" title="ID" component={ID} options={{headerShown: false}}/>
+        <Stack.Screen name="Information" title="Information" component={Information} options={{headerShown: false}}/>
      </Stack.Navigator>
     </NavigationContainer>
   );

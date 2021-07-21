@@ -7,8 +7,45 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import firebase from '../../../database/firebase';
 
-function VerificationCard({ navigation }) {
+import {
+  useFonts,
+  RobotoMono_100Thin,
+  RobotoMono_200ExtraLight,
+  RobotoMono_300Light,
+  RobotoMono_400Regular,
+  RobotoMono_500Medium,
+  RobotoMono_600SemiBold,
+  RobotoMono_700Bold,
+  RobotoMono_100Thin_Italic,
+  RobotoMono_200ExtraLight_Italic,
+  RobotoMono_300Light_Italic,
+  RobotoMono_400Regular_Italic,
+  RobotoMono_500Medium_Italic,
+  RobotoMono_600SemiBold_Italic,
+  RobotoMono_700Bold_Italic,
+} from '@expo-google-fonts/roboto-mono';
+
+
+function VerificationCard({ route, navigation }) {
     const [image, setImage] = useState(null);
+    const {testResult} = route.params;
+
+    let [fontsLoaded] = useFonts({
+      RobotoMono_100Thin,
+      RobotoMono_200ExtraLight,
+      RobotoMono_300Light,
+      RobotoMono_400Regular,
+      RobotoMono_500Medium,
+      RobotoMono_600SemiBold,
+      RobotoMono_700Bold,
+      RobotoMono_100Thin_Italic,
+      RobotoMono_200ExtraLight_Italic,
+      RobotoMono_300Light_Italic,
+      RobotoMono_400Regular_Italic,
+      RobotoMono_500Medium_Italic,
+      RobotoMono_600SemiBold_Italic,
+      RobotoMono_700Bold_Italic,
+  });
 
     useEffect(() => {
         (async () => {
@@ -62,9 +99,11 @@ function VerificationCard({ navigation }) {
  
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{fontFamily: 'RobotoMono_700Bold', fontSize: 30}}> Verification - Card </Text>
+            <Text style={{fontFamily: 'RobotoMono_400Regular', fontSize: 20}}> Take a picture of your vaccination record </Text>
             {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
             <Button title="Pick an card image from camera roll" onPress={pickImage} />
-            <Button title="Next for verification ID" onPress={() => navigation.navigate('VerificationID')} />
+            <Button title="Next for verification ID" onPress={() => navigation.navigate('VerificationID', {testResult: testResult})} />
         </View>
     );
 }

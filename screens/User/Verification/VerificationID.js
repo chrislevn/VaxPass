@@ -7,8 +7,45 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import firebase from '../../../database/firebase';
 
-function VerificationID({ navigation }) {
+import {
+  useFonts,
+  RobotoMono_100Thin,
+  RobotoMono_200ExtraLight,
+  RobotoMono_300Light,
+  RobotoMono_400Regular,
+  RobotoMono_500Medium,
+  RobotoMono_600SemiBold,
+  RobotoMono_700Bold,
+  RobotoMono_100Thin_Italic,
+  RobotoMono_200ExtraLight_Italic,
+  RobotoMono_300Light_Italic,
+  RobotoMono_400Regular_Italic,
+  RobotoMono_500Medium_Italic,
+  RobotoMono_600SemiBold_Italic,
+  RobotoMono_700Bold_Italic,
+} from '@expo-google-fonts/roboto-mono';
+
+function VerificationID({ route, navigation }) {
     const [image, setImage] = useState(null);
+    const {testResult} = route.params;
+
+    let [fontsLoaded] = useFonts({
+      RobotoMono_100Thin,
+      RobotoMono_200ExtraLight,
+      RobotoMono_300Light,
+      RobotoMono_400Regular,
+      RobotoMono_500Medium,
+      RobotoMono_600SemiBold,
+      RobotoMono_700Bold,
+      RobotoMono_100Thin_Italic,
+      RobotoMono_200ExtraLight_Italic,
+      RobotoMono_300Light_Italic,
+      RobotoMono_400Regular_Italic,
+      RobotoMono_500Medium_Italic,
+      RobotoMono_600SemiBold_Italic,
+      RobotoMono_700Bold_Italic,
+  });
+
 
     useEffect(() => {
         (async () => {
@@ -25,7 +62,7 @@ function VerificationID({ navigation }) {
         let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.All,
           allowsEditing: true,
-          aspect: [4, 3],
+          // aspect: [4, 3],
           quality: 1,
         });
     
@@ -62,9 +99,11 @@ function VerificationID({ navigation }) {
  
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{fontFamily: 'RobotoMono_700Bold', fontSize: 30}}> Verification - ID </Text>
+            <Text style={{fontFamily: 'RobotoMono_400Regular', fontSize: 20}}> Take a picture of your ID </Text>
             {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
             <Button title="Pick an ID image from camera roll" onPress={pickImage} />
-            <Button title="Done" onPress={() => navigation.navigate('DigitalCard')} />
+            <Button title="Done" onPress={() => navigation.navigate('DigitalCard', {testResult: testResult})} />
         </View>
     );
 }
