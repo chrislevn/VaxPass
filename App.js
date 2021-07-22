@@ -6,7 +6,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-
 // Screens 
 import LoginUser from './screens/Login/LoginUser'; 
 import LoginProvider from './screens/Login/LoginProvider';
@@ -65,15 +64,15 @@ function App() {
         <Stack.Screen name="GenerateCodeScreen" component={GenerateCodeScreen} options={{headerShown: false}}/>
         <Stack.Screen name="SignUpUser" component={SignUpUser} options={{headerShown: false}}/>
         <Stack.Screen name="SignUpProvider" component={SignUpProvider} options={{headerShown: false}}/>
-        <Stack.Screen name="SplashScreen" component={SplashScreen} options={{headerShown: false}} options={{headerShown: false}}/>
-        <Stack.Screen name="Auth" component={Auth} options={{headerShown: false}} />
-        <Stack.Screen name="DrawerNavigationRoutes" component={DrawerNavigationRoutes} options={{headerShown: false}} />
+        <Stack.Screen name="SplashScreen" component={SplashScreen}/>
+        <Stack.Screen name="Auth" component={Auth} />
+        <Stack.Screen name="DrawerNavigationRoutes" component={DrawerNavigationRoutes}/>
 
-        <Stack.Screen name="VerificationCard" title="Verification Card" component={VerificationCard} options={{headerShown: false}}/>
-        <Stack.Screen name="VerificationID" title="Verification ID" component={VerificationID} options={{headerShown: false}}/>
+        <Stack.Screen name="VerificationCard" title="Verification Card" component={VerificationCard}/>
+        <Stack.Screen name="VerificationID" title="Verification ID" component={VerificationID}/>
         <Stack.Screen name="DigitalCard" title="Digital Card" component={DigitalCard} options={{headerShown: false}}/>
-        <Stack.Screen name="Card" title="Card" component={Card} />
-        <Stack.Screen name="ID" title="ID" component={ID} options={{headerShown: false}}/>
+        <Stack.Screen name="Card" component={Card}/>
+        <Stack.Screen name="ID" component={ID} />
         <Stack.Screen name="Information" title="Information" component={Information} options={{headerShown: false}}/>
      </Stack.Navigator>
     </NavigationContainer>

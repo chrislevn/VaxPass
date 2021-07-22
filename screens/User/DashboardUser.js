@@ -1,11 +1,10 @@
 import React, { Component, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, Alert, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Alert, Pressable, ActivityIndicator } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import firebase from '../../database/firebase';
-import { set } from 'react-native-reanimated';
 
 import {
     useFonts,
@@ -55,14 +54,10 @@ function DashboardUser({navigation}) {
 
 
     useEffect(() => {
-        // setCode(MakeID(6));
         var date = new Date().getDate(); //Current Date
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var monthName = months[new Date().getMonth()]; //Current Month
         var year = new Date().getFullYear(); //Current Year
-        var hours = new Date().getHours(); //Current Hours
-        var min = new Date().getMinutes(); //Current Minutes
-        var sec = new Date().getSeconds(); //Current Seconds
         
         setCurrentDate(
             monthName + ' ' + date + ', ' + year 
@@ -74,13 +69,12 @@ function DashboardUser({navigation}) {
               setUID(user.uid); 
             }
         });
-
-        // setDisplayName(firebase.auth().currentUser.displayName);
-        // setUID(firebase.auth().currentUser.uid); 
     });
 
     const signOut = () => {
         firebase.auth().signOut().then(() => {
+
+        // navigation.navigate('LoginUser');
           navigation.reset({
             index: 0,
             routes: [{ name: 'LoginUser' }],
@@ -114,17 +108,20 @@ function DashboardUser({navigation}) {
         };
     }
 
-      
+    const goToInfo = () => {
+        navigation.navigate('Information')
+    }
+
     const verify = (code) => { 
-        const user = firebase.auth().currentUser; 
         try {
             const storageRef = firebase.database().ref(`providers/` + `${currentDate}/` + `${code}`);
             
             storageRef.on('value', (snapshot) => {
                 const data = snapshot.val(); 
-
+                var provider = data['provider'];
+ 
                 try {
-                    setProvider(data.provider); 
+                    setProvider(provider); 
                     setDose(data.dose);
                     UserUpload(currentDate, 'TechPoint', data.dose, data.provider);
 
@@ -152,91 +149,110 @@ function DashboardUser({navigation}) {
             setVerify(false);
         }
     } 
-   
-    return (
-    <View style={styles.container}>
-        <Text style = {styles.textStyle}>
-        Welcome, {displayName}
-        </Text>
-        <TextInput
-            style={styles.input}
-            onChangeText = {setInput}
-            placeholder="Enter the code"
-        />
-        {!isVerify && <Text> Type again! </Text>}
-        <Pressable style={styles.button} onPress={() => verify(input_text)}>
-            <Text style={styles.buttonText}> Submit </Text>
-        </Pressable>
+    if (!fontsLoaded) {
+        return  ( <View style={styles.container}>
+            <ActivityIndicator size="large" color="#9E9E9E"/>
+          </View>);
+    } else {
+        return (
+        <View style={styles.container}>
+            <Text style = {styles.textStyle}>
+            Welcome, {displayName}
+            </Text>
+            <TextInput
+                style={styles.input}
+                onChangeText = {setInput}
+                placeholder="Enter the code"
+            />
+            {!isVerify && <Text> Type again! </Text>}
+            <Pressable style={styles.button} 
+                onPress={() => verify(input_text)}
+            >
+                <Text style={styles.buttonText}> Submit </Text>
+            </Pressable>
 
-        <Text> ---- or ---- </Text>
+            <Text> ---- or ---- </Text>
 
-        <Pressable style={styles.button} onPress={() => navigation.navigate('Information')}>
-            <Text style={styles.buttonText}> Enter the code manually </Text>
-        </Pressable>
+            <Pressable style={styles.buttonOther} onPress={() => goToInfo()}>
+                <Text style={styles.buttonText}> Enter the code manually </Text>
+            </Pressable>
 
-       
-        <Pressable style={styles.logoutButton} onPress={signOut()}>
-            <Text style={styles.buttonText}> Log out </Text>
-        </Pressable>
-    </View>
-    )
+            <Pressable style={styles.logoutButton} onPress={() => signOut()}>
+                <Text style={styles.buttonText}> Log out </Text>
+            </Pressable>
+        </View>
+    )}
   };
 
 export default DashboardUser; 
   
 const styles = StyleSheet.create({
-container: {
-    flex: 1,
-    display: "flex",
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 35,
-    backgroundColor: '#fff'
-},
-button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 4,
-    elevation: 3,
-    backgroundColor: 'black',
-    borderRadius: 30, 
-    margin: 5
-}, 
+    container: {
+        flex: 1,
+        display: "flex",
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 35,
+        backgroundColor: '#fff'
+    },
+    button: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 4,
+        elevation: 3,
+        backgroundColor: 'black',
+        borderRadius: 30, 
+        margin: 5, 
+        width: 300
+    }, 
 
-buttonText: {
-    fontSize: 16,
-    lineHeight: 21,
-    fontWeight: 'bold',
-    letterSpacing: 0.25,
-    color: 'white',
-},
-logoutButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 4,
-    elevation: 3,
-    backgroundColor: 'black',
-    borderRadius: 30, 
-    margin: 5
-}, 
+    buttonText: {
+        fontSize: 16,
+        lineHeight: 21,
+        fontWeight: 'bold',
+        letterSpacing: 0.25,
+        color: 'white',
+    },
+    buttonOther: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 4,
+        elevation: 3,
+        backgroundColor: '#38502D',
+        borderRadius: 30, 
+        margin: 5, 
+        width: 300
+    }, 
+    logoutButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 4,
+        elevation: 3,
+        backgroundColor: '#5B3030',
+        borderRadius: 30, 
+        margin: 5, 
+        width: 300
+    }, 
 
-textStyle: {
-    fontFamily: 'RobotoMono_700Bold',
-    fontSize: 30,
-    marginBottom: 20
-},
-input: {
-    height: 40,
-    width: 300,
-    margin: 12,
-    borderWidth: 1,
-    alignItems: 'center', 
-    justifyContent: 'center',
-    display: 'flex', 
-    alignContent: 'center', 
-    }
-});
+    textStyle: {
+        fontFamily: 'RobotoMono_700Bold',
+        fontSize: 30,
+        marginBottom: 20
+    },
+    input: {
+        height: 40,
+        width: 300,
+        margin: 12,
+        borderWidth: 1,
+        alignItems: 'center', 
+        justifyContent: 'center',
+        display: 'flex', 
+        alignContent: 'center', 
+        }
+    });

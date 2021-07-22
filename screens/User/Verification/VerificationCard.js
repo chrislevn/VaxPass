@@ -1,11 +1,13 @@
 import React, { Component, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, Platform, Image} from 'react-native';
+import { StyleSheet, Text, View, Button, Platform, Image, Pressable} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import firebase from '../../../database/firebase';
+
+import { Ionicons, Entypo } from '@expo/vector-icons';
 
 import {
   useFonts,
@@ -99,13 +101,106 @@ function VerificationCard({ route, navigation }) {
  
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{fontFamily: 'RobotoMono_700Bold', fontSize: 30}}> Verification - Card </Text>
-            <Text style={{fontFamily: 'RobotoMono_400Regular', fontSize: 20}}> Take a picture of your vaccination record </Text>
-            {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-            <Button title="Pick an card image from camera roll" onPress={pickImage} />
-            <Button title="Next for verification ID" onPress={() => navigation.navigate('VerificationID', {testResult: testResult})} />
+            <Text style={styles.header}> Verification - Card </Text>
+            <Text style={styles.headerSubtitle}> Upload a picture of your vaccination record </Text>
+            {image && <Image source={{ uri: image }} style={{ width: 300, height: 300 }} />}
+            {!image && 
+            <Pressable onPress={() => pickImage()}> 
+              <Entypo name="upload-to-cloud" size={100} color="black" />
+            </Pressable>}
+
+            {image && <Pressable style={styles.buttonOther} onPress={() => navigation.navigate('VerificationID', {testResult: testResult})}> 
+              <Text style={styles.buttonText}> Next for verification ID </Text>
+            </Pressable>}
         </View>
     );
 }
 
 export default VerificationCard;
+
+const styles = StyleSheet.create({
+  container: {
+      flex: 1,
+      display: "flex",
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 35,
+      backgroundColor: '#fff'
+  },
+
+  header: {
+    position: 'absolute',
+    left: 0,
+    top: 80,
+    fontFamily: 'RobotoMono_700Bold', 
+    fontSize: 30,
+  },
+
+  headerSubtitle: {
+    position: 'absolute',
+    left: 10,
+    top: 130,
+    alignContent: 'flex-start',
+    fontFamily: 'RobotoMono_400Regular', 
+    fontSize: 20,
+  },
+
+  button: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 12,
+      paddingHorizontal: 32,
+      borderRadius: 4,
+      elevation: 3,
+      backgroundColor: 'black',
+      borderRadius: 30, 
+      margin: 5
+  }, 
+
+  buttonText: {
+      fontSize: 16,
+      lineHeight: 21,
+      fontWeight: 'bold',
+      letterSpacing: 0.25,
+      color: 'white',
+  },
+  buttonOther: {
+      position: 'absolute',
+      bottom: 70,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 12,
+      paddingHorizontal: 32,
+      elevation: 3,
+      backgroundColor: '#38502D',
+      borderRadius: 30, 
+      margin: 5
+  }, 
+  logoutButton: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 12,
+      paddingHorizontal: 32,
+      borderRadius: 4,
+      elevation: 3,
+      backgroundColor: '#5B3030',
+      borderRadius: 30, 
+      margin: 5
+  }, 
+
+  textStyle: {
+      fontFamily: 'RobotoMono_700Bold',
+      fontSize: 30,
+      marginBottom: 20
+  },
+  input: {
+      height: 40,
+      width: 300,
+      margin: 12,
+      borderWidth: 1,
+      alignItems: 'center', 
+      justifyContent: 'center',
+      display: 'flex', 
+      alignContent: 'center', 
+      }
+  });

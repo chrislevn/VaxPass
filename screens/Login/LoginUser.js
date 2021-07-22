@@ -62,64 +62,67 @@ function LoginUser({navigation}) {
         setLoading(false);
         setEmail(''); 
         setPassword('');
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'DashboardUser' }],
-        });
+        navigation.navigate('DashboardUser');
+        // navigation.reset({
+        //   index: 0,
+        //   routes: [{ name:'DashboardUser'}],
+        // });
       })
       .catch(error => Alert.alert(error.message))
     }
   }
+  if (!fontsLoaded) {
+    return  (<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}></View>);
+  } else {
+    return (
+      <View style={styles.container}> 
+          {/* <View>
+            <Image
+                source={logo}
+                style={{  }}
+              />
+          </View>  */}
+        
+        <Text style={{ fontFamily: 'RobotoMono_700Bold', fontSize: 30 }}>Log-in</Text>
+        <Text style={{ fontFamily: 'RobotoMono_400Regular', fontSize: 20 }}>Email</Text>
+        
+        <TextInput
+          autoCapitalize="none"
+          autoCorrect={false}
+          style={styles.inputStyle}
+          placeholder="Your email"
+          value={email}
+          onChangeText={(val) => setEmail(val)}
+        />
 
-  return (
-    <View style={styles.container}> 
-        <View>
-          <Image
-              source={logo}
-              style={{  }}
-            />
-        </View> 
-      
-      <Text style={{ fontFamily: 'RobotoMono_700Bold', fontSize: 30 }}>Log-in</Text>
-      <Text style={{ fontFamily: 'RobotoMono_400Regular', fontSize: 20 }}>Email</Text>
-      
-      <TextInput
-        autoCapitalize="none"
-        autoCorrect={false}
-        style={styles.inputStyle}
-        placeholder="Your email"
-        value={email}
-        onChangeText={(val) => setEmail(val)}
-      />
+        <Text style={{ fontFamily: 'RobotoMono_400Regular', fontSize: 20 }}>Password</Text>
 
-      <Text style={{ fontFamily: 'RobotoMono_400Regular', fontSize: 20 }}>Password</Text>
+        <TextInput
+          style={styles.inputStyle}
+          placeholder="Password"
+          value={password}
+          onChangeText={(val) => setPassword(val)}
+          maxLength={15}
+          secureTextEntry={true}
+        />   
+        <Pressable style={styles.next} onPress={userLogin}>  
+          <Text style={styles.buttonText}> Next </Text>
+        </Pressable> 
 
-      <TextInput
-        style={styles.inputStyle}
-        placeholder="Password"
-        value={password}
-        onChangeText={(val) => setPassword(val)}
-        maxLength={15}
-        secureTextEntry={true}
-      />   
-      <Pressable style={styles.next} onPress={() => userLogin()}>  
-        <Text style={styles.buttonText}> Next </Text>
-      </Pressable> 
+        {/* <Text> ------ or ------</Text> */}
 
-      <Text> ------ or ------</Text>
+        <Pressable
+          style={styles.signUp}
+          onPress={() => navigation.navigate('SignUpUser')}>
+            <Text style={styles.buttonText}> Create an account </Text>
+        </Pressable>
 
-      <Pressable
-        style={styles.signUp}
-        onPress={() => navigation.navigate('SignUpUser')}>
-          <Text style={styles.buttonText}> Create an account </Text>
-      </Pressable>
+        <Pressable style={styles.loginProvider} onPress={() => navigation.navigate('LoginProvider')}>
+          <Text style={styles.buttonText}> Login as provider </Text>
+        </Pressable> 
 
-      <Pressable style={styles.loginProvider} onPress={() => navigation.navigate('LoginProvider')}>
-        <Text style={styles.buttonText}> Login as provider </Text>
-      </Pressable> 
-
-    </View>
-  )};
+      </View>
+    )}};
 
 export default LoginUser; 
 

@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, Platform, Alert } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Platform, Alert, Pressable } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -84,13 +84,17 @@ function Information({navigation}) {
       //   console.log(currentDate);
       };
   
-    const showMode = (currentMode) => {
-        setShowFirst(true);
+    const showMode = (currentMode, option) => {
+        if (option == '1st') {
+            setShowFirst(true);
+        } else {
+            setShowSecond(true);
+        }
         setMode(currentMode);
     };
   
-    const showDatepicker = () => {
-      showMode('date');
+    const showDatepicker = (option) => {
+      showMode('date', option);
     };
 
     const doneSelectDateFirst = () => {
@@ -107,21 +111,12 @@ function Information({navigation}) {
         if (status == false) {
             return "Select a date (" + dose+ " dose)";
         } else {
-            if (dose == "1st") {
-                var month = firstDate.getMonth(); 
-                var date = firstDate.getDate(); 
-                var year = firstDate.getFullYear();
+            var month = firstDate.getMonth(); 
+            var date = firstDate.getDate(); 
+            var year = firstDate.getFullYear();
 
-                var time = month + "/" + date + "/" + year
-                return time.toString();
-            } else if (dose == "2nd") {
-                var month = secondDate.getMonth(); 
-                var date = secondDate.getDate(); 
-                var year = secondDate.getFullYear();
-
-                var time = month + "/" + date + "/" + year
-                return time.toString();
-            }
+            var time = month + "/" + date + "/" + year
+            return time.toString();
         }
     }
 
@@ -129,14 +124,12 @@ function Information({navigation}) {
         if (status == false) {
             return "Select a date (" + dose+ " dose)";
         } else {
-
             var month = secondDate.getMonth(); 
             var date = secondDate.getDate(); 
             var year = secondDate.getFullYear();
 
             var time = month + "/" + date + "/" + year
             return time.toString();
-            
         }
     }
 
@@ -196,76 +189,167 @@ function Information({navigation}) {
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{fontFamily: 'RobotoMono_700Bold', fontSize: 30}}> Information </Text>
+            <Text style={{fontFamily: 'RobotoMono_700Bold', fontSize: 30, position: 'absolute', top: '10%', left: 10}}> Information </Text>
             
-            <Text style={{fontFamily: 'RobotoMono_400Regular', fontSize: 20}}> Vaccination Provider </Text>
-            <SelectDropdown
-                data={providers}
-                onSelect={(selectedItem) => {
-                    setDose(selectedItem)
-                }}
-                defaultButtonText = "Select dose"
-            />
-            
-            <Text style={{fontFamily: 'RobotoMono_400Regular', fontSize: 20}}> 1st Dose </Text>
-            <TextInput
-                autoCorrect={false}
-                style={{height: 40}}
-                placeholder="Your clinic's name"
-                onChangeText={text => setFirstClinic(text)}
-                defaultValue={firstClinic}
-            />
-
-            <Button onPress={showDatepicker} title={showDateButtonFirst(firstDone, "1st")} />
-
-            {showFirst && 
+            <View style={{position: 'absolute', top: '18%', alignContent: 'center', alignItems: 'center'}}> 
+                <Text style={{fontFamily: 'RobotoMono_400Regular', fontSize: 20, }}> Vaccination Provider </Text>
+                <SelectDropdown
+                    data={providers}
+                    onSelect={(selectedItem) => {
+                        setDose(selectedItem)
+                    }}
+                    defaultButtonText = "Select dose"
+                    buttonTextStyle={{color: 'blue'}}
+                />
+            </View>
+            <View style={{ alignContent: 'center', alignItems: 'center', marginBottom: 50}}> 
+                <Text style={{fontFamily: 'RobotoMono_400Regular', fontSize: 20}}> 1st Dose </Text>
+                <TextInput
+                    autoCorrect={false}
+                    style={styles.input}
+                    placeholder="Your clinic's name"
+                    onChangeText={text => setFirstClinic(text)}
+                    defaultValue={firstClinic}
+                />
                 <View>
                     <DateTimePicker
-                        testID="dateTimePicker"
+                        testID="dateTimePicker1"
                         value={firstDate}
                         mode={'date'}
                         // is24Hour={true}
-                        display="spinner"
+                        display="default"
                         onChange={onChangeFirst}
-                        style={{width: 320, backgroundColor: "white"}}
+                        minimumDate={new Date(2019, 0, 1)}
+                        style={{width: 320, position: 'absolute'}}
                     />
-                    <Button onPress={doneSelectDateFirst} title="Done" />
                 </View>
-            }
+            </View>
+            
 
             <Text style={{fontFamily: 'RobotoMono_400Regular', fontSize: 20}}>2nd Dose (optional) </Text>
             <TextInput
                 autoCorrect={false}
-                style={{height: 40}}
+                style={styles.input}
                 placeholder="Your clinic's name"
                 onChangeText={text => setSecondClinic(text)}
                 defaultValue={secondClinic}
             />
 
-            <Button onPress={showDatepicker} title={showDateButtonSecond(secondDone, "2nd")} />
+            <View>
+                <DateTimePicker
+                    testID="dateTimePicker2"
+                    value={secondDate}
+                    mode={'date'}
+                    // is24Hour={true}
+                    display="default"
 
-            {showSecond && 
-                <View>
-                    <DateTimePicker
-                        testID="dateTimePicker"
-                        value={secondDate}
-                        mode={'date'}
-                        // is24Hour={true}
-                        display="spinner"
-                        onChange={onChangeSecond}
-                        style={{width: 320, backgroundColor: "white"}}
-                    />
-                    <Button onPress={doneSelectDateSecond} title="Done" />
-                </View>
-            }
+                    onChange={onChangeSecond}
+                    maximumDate={new Date()}
+                    style={{width: 320, position: 'absolute'}}
+                />
+            </View>
+            <Pressable style={styles.button} onPress={() => DoneUpload()}>
+                <Text style={styles.buttonText}>Next</Text>
+            </Pressable>
 
-            <Button title="Next" onPress={() => DoneUpload()} />
-            <Text> ----- or -----</Text>
-            <Button title="Logout" onPress={() => navigation.navigate('LoginUser', {testResult: vaccinateResult})} />
-           
+            <Pressable style={styles.buttonOther} onPress={() => navigation.navigate('LoginUser', {testResult: vaccinateResult})}>
+                <Text style={styles.buttonText}>Logout</Text>
+            </Pressable>           
         </View>
         
     );
 }
 
 export default Information;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        display: "flex",
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 35,
+        backgroundColor: '#fff'
+    },
+    containerDose: {
+        position: 'absolute', 
+        top: '38%', 
+        alignContent: 'center', 
+        alignItems: 'center'
+    }, 
+    button: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 4,
+        elevation: 3,
+        backgroundColor: 'black',
+        borderRadius: 30, 
+        margin: 5, 
+        width: 300,
+        position: 'absolute', 
+        bottom: '20%'
+    }, 
+    
+    buttonText: {
+        fontSize: 16,
+        lineHeight: 21,
+        fontWeight: 'bold',
+        letterSpacing: 0.25,
+        color: 'white',
+    },
+    input: {
+        height: 40,
+        width: 300,
+        margin: 12,
+        borderWidth: 1,
+        alignItems: 'center', 
+        justifyContent: 'center',
+        display: 'flex', 
+        alignContent: 'center', 
+    },
+    buttonOther: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 4,
+        elevation: 3,
+        backgroundColor: '#38502D',
+        borderRadius: 30, 
+        margin: 5, 
+        width: 300, 
+        position: 'absolute', 
+        bottom: '12%'
+    }, 
+    logoutButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 4,
+        elevation: 3,
+        backgroundColor: '#5B3030',
+        borderRadius: 30, 
+        margin: 5, 
+        width: 300
+    }, 
+    
+    textStyle: {
+        fontFamily: 'RobotoMono_700Bold',
+        fontSize: 30,
+        marginBottom: 20
+    },
+    input: {
+        height: 40,
+        width: 300,
+        margin: 12,
+        borderWidth: 1,
+        alignItems: 'center', 
+        justifyContent: 'center',
+        display: 'flex', 
+        alignContent: 'center', 
+        }
+    });
+    
