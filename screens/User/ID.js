@@ -1,31 +1,49 @@
+// Copyright 2021 Christopher Le
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+
+//     http://www.apache.org/licenses/LICENSE-2.0
+
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import React, { Component, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button, Image, Pressable } from 'react-native';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
+// Firebase database
 import firebase from '../../database/firebase';
 
+
+/**
+ * Screen to show ID of user
+ * @param {*} navigation props params for navigation
+ * @return {*} screen view
+ */
 function ID({ navigation }) {
     const [image, setImage] = useState(null);
 
+    /** Get user info */
     useEffect(() => {
         (async () => {
-        
             const user = firebase.auth().currentUser;   
             const url = await firebase.storage().ref(`users/user-${user.uid}/id-${user.uid}`).getDownloadURL(); 
-
+            
             setImage(url);
-            // console.log('test', url);
-        })();
+            }
+        )();
       }, []);
+    
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Image
                 source={{uri: image}}
-                style={{ width: 300, height: 300 }}
-            />
+                style={{ width: 300, height: 300 }}/>
             <Pressable style={styles.button} onPress={() => navigation.navigate('DigitalCard')}> 
                 <Text style={styles.buttonText}> Done</Text>
             </Pressable>
@@ -33,7 +51,9 @@ function ID({ navigation }) {
     );
 }
 
+
 export default ID;
+
 
 const styles = StyleSheet.create({
     container: {
@@ -42,7 +62,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 35,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
     },
   
     header: {
@@ -74,7 +94,7 @@ const styles = StyleSheet.create({
         margin: 5, 
         position: 'absolute', 
         bottom: 100, 
-        width: 300
+        width: 300,
     }, 
   
     buttonText: {
@@ -94,7 +114,7 @@ const styles = StyleSheet.create({
         elevation: 3,
         backgroundColor: '#38502D',
         borderRadius: 30, 
-        margin: 5
+        margin: 5,
     }, 
     logoutButton: {
         alignItems: 'center',
@@ -105,13 +125,13 @@ const styles = StyleSheet.create({
         elevation: 3,
         backgroundColor: '#5B3030',
         borderRadius: 30, 
-        margin: 5
+        margin: 5,
     }, 
   
     textStyle: {
         fontFamily: 'RobotoMono_700Bold',
         fontSize: 30,
-        marginBottom: 20
+        marginBottom: 20,
     },
     input: {
         height: 40,

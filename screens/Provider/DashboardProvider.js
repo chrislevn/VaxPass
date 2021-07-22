@@ -1,64 +1,64 @@
+// Copyright 2021 Christopher Le
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+
+//     http://www.apache.org/licenses/LICENSE-2.0
+
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import React, { Component, useState, useEffect, useCallback} from 'react';
 import { StyleSheet, Text, View, Button, Alert, Pressable } from 'react-native';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import RNPickerSelect from 'react-native-picker-select';
-import * as SplashScreen from 'expo-splash-screen';
-
+// Dropdown.
 import SelectDropdown from 'react-native-select-dropdown'
 
+// Firebase databse.
 import firebase from '../../database/firebase';
 
+// Fonts.
 import {
     useFonts,
-    RobotoMono_100Thin,
-    RobotoMono_200ExtraLight,
-    RobotoMono_300Light,
     RobotoMono_400Regular,
     RobotoMono_500Medium,
     RobotoMono_600SemiBold,
     RobotoMono_700Bold,
-    RobotoMono_100Thin_Italic,
-    RobotoMono_200ExtraLight_Italic,
-    RobotoMono_300Light_Italic,
-    RobotoMono_400Regular_Italic,
-    RobotoMono_500Medium_Italic,
-    RobotoMono_600SemiBold_Italic,
-    RobotoMono_700Bold_Italic,
   } from '@expo-google-fonts/roboto-mono';
 
+
+/**
+ * Dashboard screen for provider.
+ * @param {*} navigation props params for navigation.
+ * @return {*} screen view.
+ */
 function DashboardProvider({navigation}) {
     const [currentDate, setCurrentDate] = useState('');
-    // const [generatedCode, setCode] = useState(MakeID(6));
     const [dose, setDose] = useState('');
     const [provider, setProvider] = useState('');
     const [providerName, setProviderName] = useState('');
     const [clinic, setClinic] = useState('Techpoint');
-
     const providers = ["Moderna", "Pifzer"]; 
     const doses = ["1st", "2nd"]; 
-    const [appIsReady, setAppIsReady] = useState(false);
-
 
     let [fontsLoaded] = useFonts({
-        RobotoMono_100Thin,
-        RobotoMono_200ExtraLight,
-        RobotoMono_300Light,
         RobotoMono_400Regular,
         RobotoMono_500Medium,
         RobotoMono_600SemiBold,
         RobotoMono_700Bold,
-        RobotoMono_100Thin_Italic,
-        RobotoMono_200ExtraLight_Italic,
-        RobotoMono_300Light_Italic,
-        RobotoMono_400Regular_Italic,
-        RobotoMono_500Medium_Italic,
-        RobotoMono_600SemiBold_Italic,
-        RobotoMono_700Bold_Italic,
     });
 
-    const MakeID = (length) => {
+
+    /**
+     * Generate random code with specific length.
+     * @param {number} length length of the code
+     * @return {string} generated code
+     */
+    const makeID = (length) => {
         var result           = '';
         var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         var charactersLength = characters.length;
@@ -69,21 +69,31 @@ function DashboardProvider({navigation}) {
        return result;
     }
 
-    const ProviderUpload = async (generatedCode, currentDate, dose, provider) => {
-        const user = firebase.auth().currentUser; 
 
+    /**
+     * Upload provider info to Firebase. 
+     * @param {*} generatedCode generated code.
+     * @param {*} currentDate current date of getting the vaccine. 
+     * @param {*} dose type of dose (1st or 2nd). 
+     * @param {*} provider name of the clinic. 
+     */
+    const ProviderUpload = async (generatedCode, currentDate, dose, provider) => {
         const storageRef = firebase.database().ref(`providers/` + `${currentDate}/` + `${generatedCode}`);
+
         storageRef.set({
             dose: dose,
             provider: provider,
-          });
+        });
     }
     
+    /**
+     * Upload provider info and process to code screen
+     */
     const ProcessNextScreen = () => {
         if ((dose == '') || (provider == '')) {
             Alert.alert('Please enter dose and provider')
         } else {
-        var generatedCode = MakeID(6); 
+        var generatedCode = makeID(6); 
         ProviderUpload(generatedCode, currentDate, dose, provider);
         navigation.navigate('GenerateCodeScreen', {
             generatedCode: generatedCode, 
@@ -93,6 +103,7 @@ function DashboardProvider({navigation}) {
         })}
     } 
 
+    /** Get current date */
     useEffect(() => {
         const user = firebase.auth().currentUser; 
         setProviderName(user.displayName);
@@ -110,6 +121,8 @@ function DashboardProvider({navigation}) {
         );
       }, []);
     
+
+      
     if (!fontsLoaded) {
         return  (<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}></View>);
     } else {
@@ -124,21 +137,14 @@ function DashboardProvider({navigation}) {
                     <Text style={{fontFamily: 'RobotoMono_600SemiBold', fontSize: 20, alignContent: 'center', textAlign: 'center'}}> Provider </Text>
                     <SelectDropdown
                         data={providers}
-                        onSelect={(selectedItem) => {
-                            setProvider(selectedItem)
-                        }}
-                        defaultButtonText = "Select provider"
-                    />
+                        onSelect={(selectedItem) => { setProvider(selectedItem) }}
+                        defaultButtonText = "Select provider"/>
                 </View>
-                
                 <View style={styles.miniContainer}> 
                     <Text style={{fontFamily: 'RobotoMono_600SemiBold', fontSize: 20, alignContent: 'center', textAlign: 'center'}}> Dose </Text>
-                    
                     <SelectDropdown
                         data={doses}
-                        onSelect={(selectedItem) => {
-                            setDose(selectedItem)
-                        }}
+                        onSelect={(selectedItem) => { setDose(selectedItem) }}
                         defaultButtonText = "Select dose"
                     />
                 </View>
@@ -148,21 +154,21 @@ function DashboardProvider({navigation}) {
                 </Pressable>
 
                 <Pressable
+                    style={styles.logoutButton}
                     onPress={() => 
                     navigation.reset({
                         index: 0,
                         routes: [{ name: 'LoginUser' }],
-                    })
-                    // navigation.navigate('LoginUser')
-                }
-                    style={styles.logoutButton}>
+                    })}>
                         <Text style={styles.buttonText}>Logout</Text>
                 </Pressable>
             </View>
     )};
 }
 
+
 export default DashboardProvider;
+
 
 const styles = StyleSheet.create({
     container: {

@@ -1,83 +1,74 @@
+// Copyright 2021 Christopher Le
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+
+//     http://www.apache.org/licenses/LICENSE-2.0
+
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import React, { Component, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Pressable, Alert, ActivityIndicator } from 'react-native';
+
+// Firebase database.
 import firebase from '../../database/firebase';
 
+// Fonts.
 import {
   useFonts,
-  RobotoMono_100Thin,
-  RobotoMono_200ExtraLight,
-  RobotoMono_300Light,
   RobotoMono_400Regular,
   RobotoMono_500Medium,
   RobotoMono_600SemiBold,
   RobotoMono_700Bold,
-  RobotoMono_100Thin_Italic,
-  RobotoMono_200ExtraLight_Italic,
-  RobotoMono_300Light_Italic,
-  RobotoMono_400Regular_Italic,
-  RobotoMono_500Medium_Italic,
-  RobotoMono_600SemiBold_Italic,
-  RobotoMono_700Bold_Italic,
 } from '@expo-google-fonts/roboto-mono';
 
-
+/**
+ * Login screen for provider.
+ * @param {*} navigation props params for navigation.
+ * @return {*} screen view.
+ */
 function LoginProvider({navigation}) {
   const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState(''); 
   const [referralCode, setReferralCode] = useState('');
-  // const [displayName, setDisplayName] = useState('');
   const [isLoading, setLoading] = useState(false); 
 
   let [fontsLoaded] = useFonts({
-    RobotoMono_100Thin,
-    RobotoMono_200ExtraLight,
-    RobotoMono_300Light,
     RobotoMono_400Regular,
     RobotoMono_500Medium,
     RobotoMono_600SemiBold,
     RobotoMono_700Bold,
-    RobotoMono_100Thin_Italic,
-    RobotoMono_200ExtraLight_Italic,
-    RobotoMono_300Light_Italic,
-    RobotoMono_400Regular_Italic,
-    RobotoMono_500Medium_Italic,
-    RobotoMono_600SemiBold_Italic,
-    RobotoMono_700Bold_Italic,
-});
+  });
 
 
+  /** Authenticate provider. */
   const LoginProvider = () => {
     if(email === '' && password === '') {
       Alert.alert('Enter details to signin!')
     } else {
       setLoading(true);
       firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((res) => {
-        // console.log(res)
-        console.log('User logged-in successfully!')
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+        .then((res) => {
+          console.log('User logged-in successfully!')
 
-        setLoading(false);
-        setEmail(''); 
-        setPassword('');
-        if (referralCode == '3F56AC') {
+          setLoading(false);
+          setEmail(''); 
+          setPassword('');
+          if (referralCode == '3F56AC') {  // CODE IS 3F56AC  
             navigation.navigate('DashboardProvider')
-        } else { Alert.alert('Invalid referral code')}
+        } else { Alert.alert('Invalid referral code') }
       })
       .catch(error => Alert.alert(error.message))
     }
   }
 
-  // useEffect(() => {
-  //   // console.log(isLoading);
-  //   if(isLoading){
-  //     return(
-  //       <View style={styles.preloader}>
-  //         <ActivityIndicator size="large" color="#9E9E9E"/>
-  //       </View>
-  //     )}
-  //   });
 
   return (
     <View style={styles.container}> 
@@ -89,19 +80,15 @@ function LoginProvider({navigation}) {
         style={styles.inputStyle}
         placeholder="Your referral code"
         value={referralCode}
-        onChangeText={(val) => setReferralCode(val)}
-      />
-       
-       <Text style={{ fontFamily: 'RobotoMono_400Regular', fontSize: 20 }}>Email</Text>
+        onChangeText={(val) => setReferralCode(val)}/>
+      <Text style={{ fontFamily: 'RobotoMono_400Regular', fontSize: 20 }}>Email</Text>
       <TextInput
         autoCapitalize="none"
         autoCorrect={false}
         style={styles.inputStyle}
         placeholder="Your email"
         value={email}
-        onChangeText={(val) => setEmail(val)}
-      />
-
+        onChangeText={(val) => setEmail(val)}/>
       <Text style={{ fontFamily: 'RobotoMono_400Regular', fontSize: 20 }}>Password</Text>
       <TextInput
         style={styles.inputStyle}
@@ -109,19 +96,20 @@ function LoginProvider({navigation}) {
         value={password}
         onChangeText={(val) => setPassword(val)}
         maxLength={15}
-        secureTextEntry={true}
-      />   
+        secureTextEntry={true}/>   
       <Pressable style={styles.loginProviderButton} onPress={() => LoginProvider()}>
         <Text style={styles.buttonText}> Next </Text>
       </Pressable>   
-
       <Text style={styles.loginText} onPress={() => navigation.navigate('SignUpProvider')}>
         Don't have account? Create an account as a provider
       </Text>
     </View>
-  )};
+  )
+};
+
 
 export default LoginProvider; 
+
 
 const styles = StyleSheet.create({
   container: {
@@ -130,7 +118,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     padding: 35,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   buttonText: {
     fontSize: 16,
@@ -148,7 +136,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     backgroundColor: 'black',
     borderRadius: 30, 
-    margin: 5
+    margin: 5,
 
   },
   inputStyle: {
@@ -157,12 +145,12 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     alignSelf: "center",
     borderColor: "#ccc",
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
   },
   loginText: {
     color: '#3740FE',
     marginTop: 25,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   preloader: {
     left: 0,
@@ -172,6 +160,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    }
   }
-});
+);

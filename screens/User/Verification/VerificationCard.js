@@ -1,54 +1,56 @@
+// Copyright 2021 Christopher Le
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+
+//     http://www.apache.org/licenses/LICENSE-2.0
+
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import React, { Component, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button, Platform, Image, Pressable} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
+// Firebase database 
 import firebase from '../../../database/firebase';
 
-import { Ionicons, Entypo } from '@expo/vector-icons';
+// Icons
+import { Entypo } from '@expo/vector-icons';
 
+// Fonts
 import {
   useFonts,
-  RobotoMono_100Thin,
-  RobotoMono_200ExtraLight,
-  RobotoMono_300Light,
   RobotoMono_400Regular,
   RobotoMono_500Medium,
   RobotoMono_600SemiBold,
   RobotoMono_700Bold,
-  RobotoMono_100Thin_Italic,
-  RobotoMono_200ExtraLight_Italic,
-  RobotoMono_300Light_Italic,
-  RobotoMono_400Regular_Italic,
-  RobotoMono_500Medium_Italic,
-  RobotoMono_600SemiBold_Italic,
-  RobotoMono_700Bold_Italic,
 } from '@expo-google-fonts/roboto-mono';
 
 
+/**
+ * Verification Card screen for user.
+ * @param {*} route props params from previous view. 
+ * @param {*} navigation props params for navigation.
+ * @return {*} screen view.
+ */
 function VerificationCard({ route, navigation }) {
     const [image, setImage] = useState(null);
     const {testResult} = route.params;
 
     let [fontsLoaded] = useFonts({
-      RobotoMono_100Thin,
-      RobotoMono_200ExtraLight,
-      RobotoMono_300Light,
       RobotoMono_400Regular,
       RobotoMono_500Medium,
       RobotoMono_600SemiBold,
       RobotoMono_700Bold,
-      RobotoMono_100Thin_Italic,
-      RobotoMono_200ExtraLight_Italic,
-      RobotoMono_300Light_Italic,
-      RobotoMono_400Regular_Italic,
-      RobotoMono_500Medium_Italic,
-      RobotoMono_600SemiBold_Italic,
-      RobotoMono_700Bold_Italic,
-  });
+    });
 
+
+    /** Prepare for requesting image */
     useEffect(() => {
         (async () => {
           if (Platform.OS !== 'web') {
@@ -59,7 +61,12 @@ function VerificationCard({ route, navigation }) {
           }
         })();
       }, []);
-    
+      
+
+      /**
+       * Choose image
+       * @param {string} uri image url
+       */
       const pickImage = async (uri) => {
         let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -67,9 +74,6 @@ function VerificationCard({ route, navigation }) {
           aspect: [4, 3],
           quality: 1,
         });
-    
-        // console.log(result);
-
         if (!result.cancelled) {
           setImage(result.uri);
           uploadImage(result.uri, firebase.auth().currentUser.uid)
@@ -83,22 +87,23 @@ function VerificationCard({ route, navigation }) {
         }
       };
 
+
+    /**
+     * Upload image to firebase storage
+     * @param {string} uri image's uri
+     * @param {string} fileName image placeholder filename
+     * @return {blob} image file blob
+     */
     const uploadImage = async (uri, fileName) => {
         const response = await fetch(uri);
         const blob = await response.blob();
         const storageRef = firebase.storage().ref();
         const ref = storageRef.child(`users/user-${fileName}/card-${fileName}`);
-        // const update = {
-        //   photoURL: url,
-        // };
-        // console.log("Okay", user.uid, imageName);
-        // console.log("test photoURL", photoURL);
-
-        // await firebase.auth().currentUser.updateProfile(update);
-
+    
         return ref.put(blob);
     }
  
+    
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={styles.header}> Verification - Card </Text>
@@ -108,7 +113,6 @@ function VerificationCard({ route, navigation }) {
             <Pressable onPress={() => pickImage()}> 
               <Entypo name="upload-to-cloud" size={100} color="black" />
             </Pressable>}
-
             {image && <Pressable style={styles.buttonOther} onPress={() => navigation.navigate('VerificationID', {testResult: testResult})}> 
               <Text style={styles.buttonText}> Next for verification ID </Text>
             </Pressable>}
@@ -116,7 +120,9 @@ function VerificationCard({ route, navigation }) {
     );
 }
 
+
 export default VerificationCard;
+
 
 const styles = StyleSheet.create({
   container: {

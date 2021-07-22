@@ -1,29 +1,43 @@
-import React, { Component, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, Share, Pressable, ActivityIndicator} from 'react-native';
-import { Avatar, Card, Title, Paragraph } from 'react-native-paper';
+// Copyright 2021 Christopher Le
 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+
+//     http://www.apache.org/licenses/LICENSE-2.0
+
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Button, Share, Pressable, ActivityIndicator} from 'react-native';
+import { Title, Paragraph } from 'react-native-paper';
+
+// Firebase database.
 import firebase from '../../database/firebase';
+
+// Icon.
 import { FontAwesome } from '@expo/vector-icons';
-import QRCode from 'react-native-qrcode-svg';
+// import QRCode from 'react-native-qrcode-svg';
 
 import {
     useFonts,
-    RobotoMono_100Thin,
-    RobotoMono_200ExtraLight,
-    RobotoMono_300Light,
     RobotoMono_400Regular,
     RobotoMono_500Medium,
     RobotoMono_600SemiBold,
     RobotoMono_700Bold,
-    RobotoMono_100Thin_Italic,
-    RobotoMono_200ExtraLight_Italic,
-    RobotoMono_300Light_Italic,
-    RobotoMono_400Regular_Italic,
-    RobotoMono_500Medium_Italic,
-    RobotoMono_600SemiBold_Italic,
-    RobotoMono_700Bold_Italic,
   } from '@expo-google-fonts/roboto-mono';
 
+
+/**
+ * Digital card screen.
+ * @param {*} route passing params from previous screen.
+ * @param {*} navigation props params for navigation.
+ * @return {*} screen view.
+ */
 function DigitalCard({route, navigation}) {
     const {testResult} = route.params;
     const [name, setName] = useState(''); 
@@ -39,34 +53,27 @@ function DigitalCard({route, navigation}) {
     const [secondClinic, setSecondClinic] = useState('');
 
     let [fontsLoaded] = useFonts({
-        RobotoMono_100Thin,
-        RobotoMono_200ExtraLight,
-        RobotoMono_300Light,
         RobotoMono_400Regular,
         RobotoMono_500Medium,
         RobotoMono_600SemiBold,
         RobotoMono_700Bold,
-        RobotoMono_100Thin_Italic,
-        RobotoMono_200ExtraLight_Italic,
-        RobotoMono_300Light_Italic,
-        RobotoMono_400Regular_Italic,
-        RobotoMono_500Medium_Italic,
-        RobotoMono_600SemiBold_Italic,
-        RobotoMono_700Bold_Italic,
     });
 
+
+    /** Signout and go to login screen. */
     const signOut = () => {
         firebase.auth().signOut().then(() => {
-
-        // navigation.navigate('LoginUser');
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'LoginUser' }],
-          });
+            // Reset route
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'LoginUser' }],
+            });
         })
         .catch(error => console.log(error.message))
       }
+    
 
+    /** Get user info from Firebase. */
     useEffect(() => {
         firebase.auth().onAuthStateChanged((user) => {
         if (user) {
@@ -93,11 +100,14 @@ function DigitalCard({route, navigation}) {
         }); 
     })
 
-    var userProfile = `Name: ${name} + Status: ${testResult}`    
+
     if (!fontsLoaded) {
-        return  ( <View style={styles.container}>
-            <ActivityIndicator size="large" color="#9E9E9E"/>
-          </View>);
+        // Return a loading screen if font is not loaded
+        return  ( 
+            <View style={styles.container}>
+                <ActivityIndicator size="large" color="#9E9E9E"/>
+            </View>
+        );
     } else {
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -105,7 +115,6 @@ function DigitalCard({route, navigation}) {
                 <Pressable style={styles.editButton} onPress={() => navigation.navigate('DashboardUser')}>
                     <FontAwesome name="edit" size={30} color="black" />
                 </Pressable>
-
                 <Text style={styles.textStatus}>{testResult}</Text>
                 <View style={styles.miniContainerFirst}>
                     <Title style={styles.textDose}>1st Dose</Title>
@@ -119,20 +128,20 @@ function DigitalCard({route, navigation}) {
                             <Paragraph style={styles.textDetail}>Provider: {secondProvider}</Paragraph>
                             <Paragraph style={styles.textDetail}>Date: {secondDate}</Paragraph>
                             <Paragraph style={styles.textDetail}>Clinic: {secondClinic}</Paragraph>
-                    </View>
-                }
-            <Pressable style={styles.button} onPress={() => navigation.navigate('Card')}>
-                <Text style={styles.buttonText}>Next for verification</Text>
-            </Pressable>
-                
-            <Pressable style={styles.logoutButton} onPress={() => signOut()}>
-                <Text style={styles.buttonText}>Sign out</Text>
-            </Pressable>
+                    </View>}
+                <Pressable style={styles.button} onPress={() => navigation.navigate('Card')}>
+                    <Text style={styles.buttonText}>Next for verification</Text>
+                </Pressable>
+                <Pressable style={styles.logoutButton} onPress={() => signOut()}>
+                    <Text style={styles.buttonText}>Sign out</Text>
+                </Pressable>
             </View>
         )};
 }
 
+
 export default DigitalCard;
+
 
 const styles = StyleSheet.create({
     container: {
@@ -141,7 +150,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 35,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
     },
     textTitle: {
         fontFamily: 'RobotoMono_700Bold',
@@ -189,7 +198,7 @@ const styles = StyleSheet.create({
         margin: 5, 
         width: 300, 
         bottom: '30%', 
-        position: 'absolute'
+        position: 'absolute',
     }, 
     
     buttonText: {
@@ -209,7 +218,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#38502D',
         borderRadius: 30, 
         margin: 5, 
-        width: 300
+        width: 300,
     }, 
     logoutButton: {
         alignItems: 'center',
@@ -223,7 +232,7 @@ const styles = StyleSheet.create({
         margin: 5, 
         width: 300, 
         bottom: '20%', 
-        position: 'absolute'
+        position: 'absolute',
     }, 
     editButton: {
         position: 'absolute', 
@@ -233,7 +242,7 @@ const styles = StyleSheet.create({
     textStyle: {
         fontFamily: 'RobotoMono_700Bold',
         fontSize: 30,
-        marginBottom: 20
+        marginBottom: 20,
     },
     input: {
         height: 40,
@@ -245,4 +254,5 @@ const styles = StyleSheet.create({
         display: 'flex', 
         alignContent: 'center', 
         }
-    });
+    }
+);

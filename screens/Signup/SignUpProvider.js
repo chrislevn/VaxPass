@@ -1,61 +1,56 @@
+// Copyright 2021 Christopher Le
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+
+//     http://www.apache.org/licenses/LICENSE-2.0
+
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import React, { Component, useState, useEffect } from 'react';
 import {  StyleSheet, Text, View, TextInput, Button, Pressable, Alert, ActivityIndicator } from 'react-native';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
+// Firebase database
 import firebase from '../../database/firebase';
-import ID from '../User/ID';
 
+// Logo
 import logo from '../../assets/Logo/logo.png'; 
-// import { useFonts } from 'expo-font';
 
+// Fonts
 import {
   useFonts,
-  RobotoMono_100Thin,
-  RobotoMono_200ExtraLight,
-  RobotoMono_300Light,
   RobotoMono_400Regular,
   RobotoMono_500Medium,
   RobotoMono_600SemiBold,
   RobotoMono_700Bold,
-  RobotoMono_100Thin_Italic,
-  RobotoMono_200ExtraLight_Italic,
-  RobotoMono_300Light_Italic,
-  RobotoMono_400Regular_Italic,
-  RobotoMono_500Medium_Italic,
-  RobotoMono_600SemiBold_Italic,
-  RobotoMono_700Bold_Italic,
 } from '@expo-google-fonts/roboto-mono';
 
 
-// Screens 
+/**
+ * Signup screen for provider.
+ * @param {*} navigation props params for navigation.
+ * @return {*} screen view.
+ */
 function SignUpProvider({navigation}) {
   const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState(''); 
   const [displayName, setDisplayName] = useState('');
   const [referralCode, setReferralCode] = useState('');
-  const [cardVerify, setCardVerify] = useState(''); 
-  const [IdVerify, setIdVerify] = useState(''); 
   const [isLoading, setLoading] = useState(false); 
 
   let [fontsLoaded] = useFonts({
-    RobotoMono_100Thin,
-    RobotoMono_200ExtraLight,
-    RobotoMono_300Light,
     RobotoMono_400Regular,
     RobotoMono_500Medium,
     RobotoMono_600SemiBold,
     RobotoMono_700Bold,
-    RobotoMono_100Thin_Italic,
-    RobotoMono_200ExtraLight_Italic,
-    RobotoMono_300Light_Italic,
-    RobotoMono_400Regular_Italic,
-    RobotoMono_500Medium_Italic,
-    RobotoMono_600SemiBold_Italic,
-    RobotoMono_700Bold_Italic,
-});
+  });
 
+  /** Authenticate new user */
   const registerUser = () => {
     if(email === '' && password === '') {
       Alert.alert('Enter details to signup!')
@@ -85,15 +80,7 @@ function SignUpProvider({navigation}) {
     }
   }
 
-    // useEffect(() => {
-    // // console.log(isLoading);
-    // if(isLoading){
-    //   return(
-    //     <View style={styles.preloader}>
-    //       <ActivityIndicator size="large" color="#9E9E9E"/>
-    //     </View>
-    //   )}
-    // });
+
   return (
     <View style={styles.container}>  
       <Text style={{ fontFamily: 'RobotoMono_700Bold', fontSize: 30 }}>Sign-up (provider)</Text>
@@ -144,57 +131,59 @@ function SignUpProvider({navigation}) {
     </View>
   )};
 
+
 export default SignUpProvider; 
   
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      padding: 35,
-      backgroundColor: '#fff'
-    },
-    buttonText: {
-      fontSize: 16,
-      lineHeight: 21,
-      fontWeight: 'bold',
-      letterSpacing: 0.25,
-      color: 'white',
-    }, 
-    signupButton: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingVertical: 12,
-      paddingHorizontal: 32,
-      borderRadius: 4,
-      elevation: 3,
-      backgroundColor: 'black',
-      borderRadius: 30, 
-      margin: 5
 
-    },
-    inputStyle: {
-      width: '100%',
-      marginBottom: 15,
-      paddingBottom: 15,
-      alignSelf: "center",
-      borderColor: "#ccc",
-      borderBottomWidth: 1
-    },
-    loginText: {
-      color: '#3740FE',
-      marginTop: 25,
-      textAlign: 'center'
-    },
-    preloader: {
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
-      position: 'absolute',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: '#fff'
-    }
-  });
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    padding: 35,
+    backgroundColor: '#fff'
+  },
+  buttonText: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'white',
+  }, 
+  signupButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: 'black',
+    borderRadius: 30, 
+    margin: 5
+
+  },
+  inputStyle: {
+    width: '100%',
+    marginBottom: 15,
+    paddingBottom: 15,
+    alignSelf: "center",
+    borderColor: "#ccc",
+    borderBottomWidth: 1
+  },
+  loginText: {
+    color: '#3740FE',
+    marginTop: 25,
+    textAlign: 'center'
+  },
+  preloader: {
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff'
+  }
+});

@@ -2,51 +2,38 @@ import React, { Component, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Pressable,  Alert, ActivityIndicator, Image } from 'react-native';
 import firebase from '../../database/firebase';
 
+// Logo (currently unused).
 import logo from '../../assets/Logo/logo.png'; 
-// import { useFonts } from 'expo-font';
 
+// Fonts.
 import {
   useFonts,
-  RobotoMono_100Thin,
-  RobotoMono_200ExtraLight,
-  RobotoMono_300Light,
   RobotoMono_400Regular,
   RobotoMono_500Medium,
   RobotoMono_600SemiBold,
   RobotoMono_700Bold,
-  RobotoMono_100Thin_Italic,
-  RobotoMono_200ExtraLight_Italic,
-  RobotoMono_300Light_Italic,
-  RobotoMono_400Regular_Italic,
-  RobotoMono_500Medium_Italic,
-  RobotoMono_600SemiBold_Italic,
-  RobotoMono_700Bold_Italic,
 } from '@expo-google-fonts/roboto-mono';
 
+
+/**
+ * Login screen for user.
+ * @param {*} navigation props params for navigation.
+ * @return {*} screen view.
+ */
 function LoginUser({navigation}) {
   const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState(''); 
-  // const [displayName, setDisplayName] = useState('');
   const [isLoading, setLoading] = useState(false); 
 
   let [fontsLoaded] = useFonts({
-    RobotoMono_100Thin,
-    RobotoMono_200ExtraLight,
-    RobotoMono_300Light,
     RobotoMono_400Regular,
     RobotoMono_500Medium,
     RobotoMono_600SemiBold,
-    RobotoMono_700Bold,
-    RobotoMono_100Thin_Italic,
-    RobotoMono_200ExtraLight_Italic,
-    RobotoMono_300Light_Italic,
-    RobotoMono_400Regular_Italic,
-    RobotoMono_500Medium_Italic,
-    RobotoMono_600SemiBold_Italic,
-    RobotoMono_700Bold_Italic,
-});
+    RobotoMono_700Bold, 
+  });
 
 
+  /** Authenticate user. */
   const userLogin = () => {
     if(email === '' && password === '') {
       Alert.alert('Enter details to signin!')
@@ -56,61 +43,43 @@ function LoginUser({navigation}) {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then((res) => {
-        // console.log(res)
         console.log('User logged-in successfully!')
 
         setLoading(false);
         setEmail(''); 
         setPassword('');
         navigation.navigate('DashboardUser');
-        // navigation.reset({
-        //   index: 0,
-        //   routes: [{ name:'DashboardUser'}],
-        // });
       })
       .catch(error => Alert.alert(error.message))
     }
   }
+
+
   if (!fontsLoaded) {
     return  (<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}></View>);
   } else {
     return (
       <View style={styles.container}> 
-          {/* <View>
-            <Image
-                source={logo}
-                style={{  }}
-              />
-          </View>  */}
-        
         <Text style={{ fontFamily: 'RobotoMono_700Bold', fontSize: 30 }}>Log-in</Text>
         <Text style={{ fontFamily: 'RobotoMono_400Regular', fontSize: 20 }}>Email</Text>
-        
         <TextInput
           autoCapitalize="none"
           autoCorrect={false}
           style={styles.inputStyle}
           placeholder="Your email"
           value={email}
-          onChangeText={(val) => setEmail(val)}
-        />
-
+          onChangeText={(val) => setEmail(val)}/>
         <Text style={{ fontFamily: 'RobotoMono_400Regular', fontSize: 20 }}>Password</Text>
-
         <TextInput
           style={styles.inputStyle}
           placeholder="Password"
           value={password}
           onChangeText={(val) => setPassword(val)}
           maxLength={15}
-          secureTextEntry={true}
-        />   
+          secureTextEntry={true}/>   
         <Pressable style={styles.next} onPress={userLogin}>  
           <Text style={styles.buttonText}> Next </Text>
         </Pressable> 
-
-        {/* <Text> ------ or ------</Text> */}
-
         <Pressable
           style={styles.signUp}
           onPress={() => navigation.navigate('SignUpUser')}>
@@ -120,11 +89,12 @@ function LoginUser({navigation}) {
         <Pressable style={styles.loginProvider} onPress={() => navigation.navigate('LoginProvider')}>
           <Text style={styles.buttonText}> Login as provider </Text>
         </Pressable> 
-
       </View>
     )}};
 
+    
 export default LoginUser; 
+
 
 const styles = StyleSheet.create({
   container: {

@@ -1,34 +1,44 @@
+// Copyright 2021 Christopher Le
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+
+//     http://www.apache.org/licenses/LICENSE-2.0
+
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import React, { Component, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button, TextInput, Platform, Alert, Pressable } from 'react-native';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+// Date and time.
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+// Dropdown.
 import SelectDropdown from 'react-native-select-dropdown';
 
+// Firebase database.
 import firebase from '../../database/firebase';
 
+// Font
 import {
     useFonts,
-    RobotoMono_100Thin,
-    RobotoMono_200ExtraLight,
-    RobotoMono_300Light,
     RobotoMono_400Regular,
     RobotoMono_500Medium,
     RobotoMono_600SemiBold,
     RobotoMono_700Bold,
-    RobotoMono_100Thin_Italic,
-    RobotoMono_200ExtraLight_Italic,
-    RobotoMono_300Light_Italic,
-    RobotoMono_400Regular_Italic,
-    RobotoMono_500Medium_Italic,
-    RobotoMono_600SemiBold_Italic,
-    RobotoMono_700Bold_Italic,
   } from '@expo-google-fonts/roboto-mono';
 
 
-
+/**
+ * Dashboard screen for user information.
+ * @param {*} {navigation} props params for navigation.
+ * @return {*} screen view.
+ */
 function Information({navigation}) {
     const [text, setText] = useState('');
     const providers = ["Moderna", "Pifzer"]; 
@@ -59,31 +69,29 @@ function Information({navigation}) {
     //   console.log(currentDate);
     };
 
-
     let [fontsLoaded] = useFonts({
-        RobotoMono_100Thin,
-        RobotoMono_200ExtraLight,
-        RobotoMono_300Light,
         RobotoMono_400Regular,
         RobotoMono_500Medium,
         RobotoMono_600SemiBold,
         RobotoMono_700Bold,
-        RobotoMono_100Thin_Italic,
-        RobotoMono_200ExtraLight_Italic,
-        RobotoMono_300Light_Italic,
-        RobotoMono_400Regular_Italic,
-        RobotoMono_500Medium_Italic,
-        RobotoMono_600SemiBold_Italic,
-        RobotoMono_700Bold_Italic,
     });
 
-    const onChangeSecond = (event, selectedDate) => {
+
+    /**
+     * Get select date value
+     * @param {string} selectedDate
+     */
+    const onChangeSecond = (selectedDate) => {
         const currentDate = selectedDate || date;
-      //   setShow(Platform.OS === 'ios');
           setSecondDate(currentDate);
-      //   console.log(currentDate);
-      };
+    };
   
+
+    /**
+     * Get show mode (date or time)
+     * @param {string} currentMode get mode
+     * @param {string} option get dose type (1st or 2nd)
+     */
     const showMode = (currentMode, option) => {
         if (option == '1st') {
             setShowFirst(true);
@@ -92,21 +100,38 @@ function Information({navigation}) {
         }
         setMode(currentMode);
     };
-  
+    
+
+    /**
+     * Show date picker
+     * @param {string} option get dose type (1st or 2nd)
+     */
     const showDatepicker = (option) => {
       showMode('date', option);
     };
 
+    /**
+     * Actions after select date on first box
+     */
     const doneSelectDateFirst = () => {
         setFirstDone(true);
         setShowFirst(false);
     }
 
+
+    /**
+     * Actions after select date on second box
+     */
     const doneSelectDateSecond = () => {
         setSecondDone(true); 
         setShowSecond(false);
     }
 
+
+    /**
+     * Return a date value for the first date selection box
+     * @returns {string} time value or placeholder
+     */
     const showDateButtonFirst = (status, dose) => {
         if (status == false) {
             return "Select a date (" + dose+ " dose)";
@@ -120,6 +145,11 @@ function Information({navigation}) {
         }
     }
 
+
+    /**
+     * Return a date value for the second date selection box
+     * @returns {string} time value or placeholder
+     */
     const showDateButtonSecond = (status, dose) => {
         if (status == false) {
             return "Select a date (" + dose+ " dose)";
@@ -133,6 +163,11 @@ function Information({navigation}) {
         }
     }
 
+
+    /**
+     * Get current time 
+     * @returns {string} current time in MM/DD/YY formate
+     */
     const handleTime = (time) => {
         var month = time.getMonth(); 
         var date = time.getDate(); 
@@ -143,11 +178,19 @@ function Information({navigation}) {
     }
 
 
-    //User Firebase
+    /**
+     * Upload user details info to firebase database.
+     * @param {string} firstDate date of getting 1st vaccine
+     * @param {string} secondDate date of getting 1st vaccine
+     * @param {string} firstHospital location of first vaccination
+     * @param {string} secondHospital location of first vaccination
+     * @param {string} provider name of vaccination
+     */
     const UserUpload = async (firstDate, secondDate, firstHospital, secondHospital, provider) => {
         const user = firebase.auth().currentUser; 
         const storageRef = firebase.database().ref(`users/` + `${user.uid}`);
         var testResult = ''; 
+
         if (secondDate != null && secondHospital !=  null) {
             testResult = 'Fully vaccinated'
         } else {
@@ -169,28 +212,25 @@ function Information({navigation}) {
         });
     }
 
-    //Finish Editing
+
+    /** Finish uploading and navigate to the next screen */
     const DoneUpload = () => {       
         if (firstDate != null) {
             if (secondDate != null) {
                 setVacResult('Fully vaccinated');
-            } else {
-                setVacResult('Half vaccinated');
-            }
+            } else { setVacResult('Half vaccinated'); }
         }
         UserUpload(handleTime(firstDate), handleTime(secondDate), firstClinic, secondClinic, dose); 
-
+        
         if (dose != null && firstDate != null && firstClinic != null) {
                 navigation.navigate('VerificationCard', {testResult: vaccinateResult}); 
-            } else {
-                Alert.alert('Missing information. Try again');
-            }
+            } else { Alert.alert('Missing information. Try again'); }
     } 
+
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{fontFamily: 'RobotoMono_700Bold', fontSize: 30, position: 'absolute', top: '10%', left: 10}}> Information </Text>
-            
             <View style={{position: 'absolute', top: '18%', alignContent: 'center', alignItems: 'center'}}> 
                 <Text style={{fontFamily: 'RobotoMono_400Regular', fontSize: 20, }}> Vaccination Provider </Text>
                 <SelectDropdown
@@ -199,8 +239,7 @@ function Information({navigation}) {
                         setDose(selectedItem)
                     }}
                     defaultButtonText = "Select dose"
-                    buttonTextStyle={{color: 'blue'}}
-                />
+                    buttonTextStyle={{color: 'blue'}}/>
             </View>
             <View style={{ alignContent: 'center', alignItems: 'center', marginBottom: 50}}> 
                 <Text style={{fontFamily: 'RobotoMono_400Regular', fontSize: 20}}> 1st Dose </Text>
@@ -209,8 +248,7 @@ function Information({navigation}) {
                     style={styles.input}
                     placeholder="Your clinic's name"
                     onChangeText={text => setFirstClinic(text)}
-                    defaultValue={firstClinic}
-                />
+                    defaultValue={firstClinic}/>
                 <View>
                     <DateTimePicker
                         testID="dateTimePicker1"
@@ -220,21 +258,16 @@ function Information({navigation}) {
                         display="default"
                         onChange={onChangeFirst}
                         minimumDate={new Date(2019, 0, 1)}
-                        style={{width: 320, position: 'absolute'}}
-                    />
+                        style={{width: 320, position: 'absolute'}}/>
                 </View>
             </View>
-            
-
             <Text style={{fontFamily: 'RobotoMono_400Regular', fontSize: 20}}>2nd Dose (optional) </Text>
             <TextInput
                 autoCorrect={false}
                 style={styles.input}
                 placeholder="Your clinic's name"
                 onChangeText={text => setSecondClinic(text)}
-                defaultValue={secondClinic}
-            />
-
+                defaultValue={secondClinic}/>
             <View>
                 <DateTimePicker
                     testID="dateTimePicker2"
@@ -242,7 +275,6 @@ function Information({navigation}) {
                     mode={'date'}
                     // is24Hour={true}
                     display="default"
-
                     onChange={onChangeSecond}
                     maximumDate={new Date()}
                     style={{width: 320, position: 'absolute'}}
@@ -251,7 +283,6 @@ function Information({navigation}) {
             <Pressable style={styles.button} onPress={() => DoneUpload()}>
                 <Text style={styles.buttonText}>Next</Text>
             </Pressable>
-
             <Pressable style={styles.buttonOther} onPress={() => navigation.navigate('LoginUser', {testResult: vaccinateResult})}>
                 <Text style={styles.buttonText}>Logout</Text>
             </Pressable>           
@@ -260,7 +291,9 @@ function Information({navigation}) {
     );
 }
 
+
 export default Information;
+
 
 const styles = StyleSheet.create({
     container: {
@@ -269,13 +302,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 35,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
     },
     containerDose: {
         position: 'absolute', 
         top: '38%', 
         alignContent: 'center', 
-        alignItems: 'center'
+        alignItems: 'center',
     }, 
     button: {
         alignItems: 'center',
@@ -289,7 +322,7 @@ const styles = StyleSheet.create({
         margin: 5, 
         width: 300,
         position: 'absolute', 
-        bottom: '20%'
+        bottom: '20%',
     }, 
     
     buttonText: {
@@ -321,7 +354,7 @@ const styles = StyleSheet.create({
         margin: 5, 
         width: 300, 
         position: 'absolute', 
-        bottom: '12%'
+        bottom: '12%',
     }, 
     logoutButton: {
         alignItems: 'center',
@@ -333,13 +366,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#5B3030',
         borderRadius: 30, 
         margin: 5, 
-        width: 300
+        width: 300,
     }, 
     
     textStyle: {
         fontFamily: 'RobotoMono_700Bold',
         fontSize: 30,
-        marginBottom: 20
+        marginBottom: 20,
     },
     input: {
         height: 40,
@@ -351,5 +384,6 @@ const styles = StyleSheet.create({
         display: 'flex', 
         alignContent: 'center', 
         }
-    });
+    }
+);
     

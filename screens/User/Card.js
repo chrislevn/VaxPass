@@ -1,49 +1,49 @@
+// Copyright 2021 Christopher Le
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+
+//     http://www.apache.org/licenses/LICENSE-2.0
+
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import React, { Component, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button, Image, Pressable } from 'react-native';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
+// Firebase database
 import firebase from '../../database/firebase';
 
+// Fonts
 import {
     useFonts,
-    RobotoMono_100Thin,
-    RobotoMono_200ExtraLight,
-    RobotoMono_300Light,
     RobotoMono_400Regular,
     RobotoMono_500Medium,
     RobotoMono_600SemiBold,
     RobotoMono_700Bold,
-    RobotoMono_100Thin_Italic,
-    RobotoMono_200ExtraLight_Italic,
-    RobotoMono_300Light_Italic,
-    RobotoMono_400Regular_Italic,
-    RobotoMono_500Medium_Italic,
-    RobotoMono_600SemiBold_Italic,
-    RobotoMono_700Bold_Italic,
   } from '@expo-google-fonts/roboto-mono';
 
-function Card({navigation }) {
+
+/**
+ * Card screen for user.
+ * @param {*} {navigation} props params for navigation.
+ * @return {*} screen view.
+ */
+function Card({ navigation }) {
     const [image, setImage] = useState(null);
+
     let [fontsLoaded] = useFonts({
-        RobotoMono_100Thin,
-        RobotoMono_200ExtraLight,
-        RobotoMono_300Light,
         RobotoMono_400Regular,
         RobotoMono_500Medium,
         RobotoMono_600SemiBold,
         RobotoMono_700Bold,
-        RobotoMono_100Thin_Italic,
-        RobotoMono_200ExtraLight_Italic,
-        RobotoMono_300Light_Italic,
-        RobotoMono_400Regular_Italic,
-        RobotoMono_500Medium_Italic,
-        RobotoMono_600SemiBold_Italic,
-        RobotoMono_700Bold_Italic,
     });
 
-
+    /** Get user info from firebase */
     useEffect(() => {
         (async () => {
             const user = firebase.auth().currentUser;   
@@ -53,12 +53,12 @@ function Card({navigation }) {
         })();
       }, []);
 
+
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Image
                 source={{uri: image}}
-                style={{ width: 300, height: 300 }}
-            />
+                style={{ width: 300, height: 300 }}/>
             <Pressable style={styles.button} onPress={() => navigation.navigate('ID')}> 
                 <Text style={styles.buttonText}> Next for ID </Text>
             </Pressable>
@@ -66,7 +66,9 @@ function Card({navigation }) {
     );
 }
 
+
 export default Card;
+
 
 const styles = StyleSheet.create({
     container: {
