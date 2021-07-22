@@ -188,7 +188,7 @@ function Information({navigation}) {
      */
     const UserUpload = async (firstDate, secondDate, firstHospital, secondHospital, provider) => {
         const user = firebase.auth().currentUser; 
-        const storageRef = firebase.database().ref(`users/` + `${user.uid}`);
+        const storageRef = firebase.database().ref().child(`users/` + `${user.uid}`);
         var testResult = ''; 
 
         if (secondDate != null && secondHospital !=  null) {

@@ -91,35 +91,42 @@ function DigitalCard({route, navigation}) {
             });
         })
         .catch(error => console.log(error.message))
-      }
-    
+    }
 
+
+    const getUserInfo = () => {
+        firebase.auth().onAuthStateChanged(function(user){
+            if (user) {
+                setName(user.displayName);
+                var uid = user.uid;
+                const storageRef = firebase.database().ref('users').child(uid);
+
+                storageRef.on('value', (snapshot) => {
+                    var data = snapshot.val();
+       
+                    setfirstDate(data['1st'].date); 
+                    setfirstProvider(data['1st'].provider);
+                    setFirstClinic(data['1st'].hosptal);
+    
+                    setSecondDate(data['2nd'].date); 
+                    setSecondProvider(data['2nd'].provider);
+                    setSecondClinic(data['2nd'].hosptal);
+    
+                    if (secondProvider != null) {
+                        setSecond(true);
+                    }
+                  });
+                }
+            }); 
+        }
+
+        
     /** Get user info from Firebase. */
     useEffect(() => {
-        firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-            setName(user.displayName);
-            setUID(user.uid); 
-
-            const storageRef = firebase.database().ref(`users/` + `${user.uid}`);
-            storageRef.on('value', (snapshot) => {
-                const data = snapshot.val();
-   
-                setfirstDate(data['1st'].date); 
-                setfirstProvider(data['1st'].provider);
-                setFirstClinic(data['1st'].hosptal);
-
-                setSecondDate(data['2nd'].date); 
-                setSecondProvider(data['2nd'].provider);
-                setSecondClinic(data['2nd'].hosptal);
-
-                if (secondProvider != null) {
-                    setSecond(true);
-                }
-              });
-            }
-        }); 
-    })
+        (async () => {
+                getUserInfo();
+            })();
+        }, []);
 
 
     if (!fontsLoaded) {

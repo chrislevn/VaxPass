@@ -101,7 +101,7 @@ function VerificationID({ route, navigation }) {
         return ref.put(blob);
     }
  
-    
+
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={styles.header}> Verification - ID </Text>
@@ -179,7 +179,8 @@ const styles = StyleSheet.create({
       elevation: 3,
       backgroundColor: '#38502D',
       borderRadius: 30, 
-      margin: 5
+      margin: 5, 
+      width: 300,
   }, 
   logoutButton: {
       alignItems: 'center',

@@ -82,7 +82,7 @@ function DashboardUser({navigation}) {
      */
     const UserUpload = async (currentDate, hospital, dose, provider) => {
         const user = firebase.auth().currentUser; 
-        const storageRef = firebase.database().ref(`users/` + `${user.uid}`);
+        const storageRef = firebase.database().ref().child(`users/` + `${user.uid}`);
         
         if (dose == '1st') {
             storageRef.update({
@@ -111,43 +111,53 @@ function DashboardUser({navigation}) {
         navigation.navigate('Information')
     }
 
+    /**
+     * Get user vaccine info from the Firebase
+     * @param {*} code code from provider
+     */
+    const getUserInfo = (code) => {
+        /** Storage reference from Firebase. */
+        const storageRef = firebase.database().ref().child(`providers/` + `${currentDate}/` + `${code}`);
+
+        storageRef.on('value', (snapshot) => {
+            const data = snapshot.val(); 
+
+            try {
+                var provider = data.provider;
+                setDose(data.dose);
+                UserUpload(currentDate, 'TechPoint', data.dose, data.provider);
+
+                if (data.dose == '1st') { 
+                    if (provider == 'Johnson & Johnson') {
+                        setVacResult("Fully vaccinated")
+                    } else { setVacResult("Half vaccinated"); }
+                } else { setVacResult("Fully vaccinated"); }
+
+                setVerify(true);
+                navigation.navigate('DigitalCard', {provider: provider, 
+                                                    dose: dose, 
+                                                    testResult: vaccinateResult});
+            } catch(error) { Alert.alert('Invalid code', error.message) }
+        });
+    }
+
     
     /**
      * Verify vaccine code and process to next screen.
      * @param {*} code the code provided by vaccine's hospital.
      */
-    const verify = async (code) => { 
-        try {
-            /** Storage reference from Firebase. */
-            const storageRef = await firebase.database().ref(`providers/` + `${currentDate}/` + `${code}`);
-            
-            storageRef.on('value', (snapshot) => {
-                const data = snapshot.val(); 
-    
-                try {
-                    var provider = data.provider;
-                    setDose(data.dose);
-                    UserUpload(currentDate, 'TechPoint', data.dose, data.provider);
-
-                    if (data.dose == '1st') { 
-                        if (provider == 'Johnson & Johnson') {
-                            setVacResult("Fully vaccinated")
-                        } else { setVacResult("Half vaccinated"); }
-                    } else { setVacResult("Fully vaccinated"); }
-
-                    setVerify(true);
-                    navigation.navigate('DigitalCard', {provider: provider, 
-                                                        dose: dose, 
-                                                        testResult: vaccinateResult});
-                } catch(error) { Alert.alert('Invalid code', error.message) }
-              }
-            );
-        } catch(error) { 
-            Alert.alert(error.message); 
-            setVerify(false);
-        }
+    const verify = (code) => { 
+        (async () => {
+            try {
+                getUserInfo(code);
+            } catch(error) { 
+                Alert.alert(error.message); 
+                setVerify(false);
+            }
+        })();
     } 
 
+   
     /** Update current time and user info. */
     useEffect(() => {
         var date = new Date().getDate(); //Current Date
