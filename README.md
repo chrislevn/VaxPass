@@ -1,7 +1,6 @@
 # VaxPass
 
 ![](https://i.imgur.com/bWzSJpQ.png)
-# VaxPass
 ## Description: 
 A cross-platform application to help you store your vaccination record and get approved anywhere you go. This project is a part of Techpoint's S.O.S Challenge 2021. 
 
