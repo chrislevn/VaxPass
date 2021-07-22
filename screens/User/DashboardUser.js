@@ -116,21 +116,21 @@ function DashboardUser({navigation}) {
      * Verify vaccine code and process to next screen.
      * @param {*} code the code provided by vaccine's hospital.
      */
-    const verify = (code) => { 
+    const verify = async (code) => { 
         try {
             /** Storage reference from Firebase. */
-            const storageRef = firebase.database().ref(`providers/` + `${currentDate}/` + `${code}`);
+            const storageRef = await firebase.database().ref(`providers/` + `${currentDate}/` + `${code}`);
             
             storageRef.on('value', (snapshot) => {
                 const data = snapshot.val(); 
-                var provider = data['provider'];
- 
+    
                 try {
+                    var provider = data.provider;
                     setDose(data.dose);
                     UserUpload(currentDate, 'TechPoint', data.dose, data.provider);
 
                     if (data.dose == '1st') { 
-                        if (data.provider == 'Johnson & Johnson') {
+                        if (provider == 'Johnson & Johnson') {
                             setVacResult("Fully vaccinated")
                         } else { setVacResult("Half vaccinated"); }
                     } else { setVacResult("Fully vaccinated"); }
@@ -139,7 +139,7 @@ function DashboardUser({navigation}) {
                     navigation.navigate('DigitalCard', {provider: provider, 
                                                         dose: dose, 
                                                         testResult: vaccinateResult});
-                } catch(error){ Alert.alert('Invalid code') }
+                } catch(error) { Alert.alert('Invalid code', error.message) }
               }
             );
         } catch(error) { 

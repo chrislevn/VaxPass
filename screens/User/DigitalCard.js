@@ -60,6 +60,27 @@ function DigitalCard({route, navigation}) {
     });
 
 
+    /** 
+     * Format time. 
+     * @param {string} time input time. 
+     * @returns {string} format time string
+     * */
+    const handleTimeString = (time) => {
+        if (time.includes("/")) {
+            var char = time.split("/");
+            var month = parseInt(char[0]); 
+            var date = char[1];
+            var year = char[2];
+
+            var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            var monthName = months[parseInt(month) - 1]; //Current Month
+            var newDate = `${monthName} ${date}, ${year}`
+            
+            return newDate;
+        } else { return time; }
+    }
+
+
     /** Signout and go to login screen. */
     const signOut = () => {
         firebase.auth().signOut().then(() => {
@@ -84,11 +105,11 @@ function DigitalCard({route, navigation}) {
             storageRef.on('value', (snapshot) => {
                 const data = snapshot.val();
    
-                setfirstDate(data['1st'].date); 
+                setfirstDate(handleTimeString(data['1st'].date)); 
                 setfirstProvider(data['1st'].provider);
                 setFirstClinic(data['1st'].hosptal);
 
-                setSecondDate(data['2nd'].date); 
+                setSecondDate(handleTimeString(data['2nd'].date)); 
                 setSecondProvider(data['2nd'].provider);
                 setSecondClinic(data['2nd'].hosptal);
 
