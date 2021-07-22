@@ -1,80 +1,47 @@
-import React, { Component, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, Alert, Pressable, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TextInput, Alert, Pressable, ActivityIndicator } from 'react-native';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
+// Firebase databse
 import firebase from '../../database/firebase';
 
+// Custom Fonts
 import {
     useFonts,
-    RobotoMono_100Thin,
-    RobotoMono_200ExtraLight,
-    RobotoMono_300Light,
     RobotoMono_400Regular,
     RobotoMono_500Medium,
     RobotoMono_600SemiBold,
     RobotoMono_700Bold,
-    RobotoMono_100Thin_Italic,
-    RobotoMono_200ExtraLight_Italic,
-    RobotoMono_300Light_Italic,
-    RobotoMono_400Regular_Italic,
-    RobotoMono_500Medium_Italic,
-    RobotoMono_600SemiBold_Italic,
-    RobotoMono_700Bold_Italic,
   } from '@expo-google-fonts/roboto-mono';
 
 
 function DashboardUser({navigation}) {
-    const [uid, setUID] = useState(null); 
-    const [input_text, setInput] = useState(''); 
+    const [inputText, setInput] = useState(''); 
     const [currentDate, setCurrentDate] = useState('');
     const [displayName, setDisplayName] = useState(''); 
     const [isVerify, setVerify] = useState(true);
     const [dose, setDose] = useState(''); 
-    const [provider, setProvider] = useState(''); 
     const [vaccinateResult, setVacResult] = useState('');
 
     let [fontsLoaded] = useFonts({
-        RobotoMono_100Thin,
-        RobotoMono_200ExtraLight,
-        RobotoMono_300Light,
         RobotoMono_400Regular,
         RobotoMono_500Medium,
         RobotoMono_600SemiBold,
         RobotoMono_700Bold,
         RobotoMono_100Thin_Italic,
-        RobotoMono_200ExtraLight_Italic,
-        RobotoMono_300Light_Italic,
-        RobotoMono_400Regular_Italic,
-        RobotoMono_500Medium_Italic,
-        RobotoMono_600SemiBold_Italic,
-        RobotoMono_700Bold_Italic,
     });
 
 
-    useEffect(() => {
-        var date = new Date().getDate(); //Current Date
-        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        var monthName = months[new Date().getMonth()]; //Current Month
-        var year = new Date().getFullYear(); //Current Year
-        
-        setCurrentDate(
-            monthName + ' ' + date + ', ' + year 
-        );
-
+    const updateUser = () => {
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
               setDisplayName(user.displayName);
-              setUID(user.uid); 
             }
         });
-    });
+    }
+
 
     const signOut = () => {
         firebase.auth().signOut().then(() => {
-
-        // navigation.navigate('LoginUser');
           navigation.reset({
             index: 0,
             routes: [{ name: 'LoginUser' }],
@@ -82,6 +49,7 @@ function DashboardUser({navigation}) {
         })
         .catch(error => console.log(error.message))
       }
+
 
     const UserUpload = async (currentDate, hospital, dose, provider) => {
         const user = firebase.auth().currentUser; 
@@ -108,9 +76,11 @@ function DashboardUser({navigation}) {
         };
     }
 
+
     const goToInfo = () => {
         navigation.navigate('Information')
     }
+
 
     const verify = (code) => { 
         try {
@@ -121,7 +91,6 @@ function DashboardUser({navigation}) {
                 var provider = data['provider'];
  
                 try {
-                    setProvider(provider); 
                     setDose(data.dose);
                     UserUpload(currentDate, 'TechPoint', data.dose, data.provider);
 
@@ -149,6 +118,22 @@ function DashboardUser({navigation}) {
             setVerify(false);
         }
     } 
+
+
+    useEffect(() => {
+        var date = new Date().getDate(); //Current Date
+        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var monthName = months[new Date().getMonth()]; //Current Month
+        var year = new Date().getFullYear(); //Current Year
+        
+        setCurrentDate(
+            monthName + ' ' + date + ', ' + year 
+        );
+
+        updateUser();
+    });
+
+
     if (!fontsLoaded) {
         return  ( <View style={styles.container}>
             <ActivityIndicator size="large" color="#9E9E9E"/>
@@ -166,7 +151,7 @@ function DashboardUser({navigation}) {
             />
             {!isVerify && <Text> Type again! </Text>}
             <Pressable style={styles.button} 
-                onPress={() => verify(input_text)}
+                onPress={() => verify(inputText)}
             >
                 <Text style={styles.buttonText}> Submit </Text>
             </Pressable>
@@ -184,8 +169,10 @@ function DashboardUser({navigation}) {
     )}
   };
 
+
 export default DashboardUser; 
   
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
