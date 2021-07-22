@@ -93,7 +93,7 @@ function DigitalCard({route, navigation}) {
         .catch(error => console.log(error.message))
     }
 
-
+    /** Retrieve user info */
     const getUserInfo = () => {
         firebase.auth().onAuthStateChanged(function(user){
             if (user) {
