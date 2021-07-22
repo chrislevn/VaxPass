@@ -38,8 +38,8 @@ import {
  * @return {*} screen view.
  */
 function VerificationID({ route, navigation }) {
+    const { firstClinic, secondClinic, testResult } = route.params;
     const [image, setImage] = useState(null);
-    const {testResult} = route.params;
 
     let [fontsLoaded] = useFonts({
       RobotoMono_400Regular,
@@ -112,7 +112,10 @@ function VerificationID({ route, navigation }) {
               <Entypo name="upload-to-cloud" size={100} color="black" />
             </Pressable>}
 
-            {image && <Pressable style={styles.buttonOther} onPress={() => navigation.navigate('DigitalCard', {testResult: testResult})}> 
+            {image && <Pressable style={styles.buttonOther} onPress={() => navigation.navigate('DigitalCard', {testResult: testResult, 
+                                                                                                    firstClinicTest: firstClinic, 
+                                                                                                    secondClinicTest: secondClinic, 
+                                                                                                    testResult: testResult})}> 
               <Text style={styles.buttonText}> Done </Text>
             </Pressable>}
         </View>

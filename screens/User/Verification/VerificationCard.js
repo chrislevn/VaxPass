@@ -40,7 +40,7 @@ import {
  */
 function VerificationCard({ route, navigation }) {
     const [image, setImage] = useState(null);
-    const {testResult} = route.params;
+    const {firstClinic, secondClinic, testResult} = route.params;
 
     let [fontsLoaded] = useFonts({
       RobotoMono_400Regular,
@@ -103,7 +103,7 @@ function VerificationCard({ route, navigation }) {
         return ref.put(blob);
     }
  
-    
+
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={styles.header}> Verification - Card </Text>
@@ -113,7 +113,10 @@ function VerificationCard({ route, navigation }) {
             <Pressable onPress={() => pickImage()}> 
               <Entypo name="upload-to-cloud" size={100} color="black" />
             </Pressable>}
-            {image && <Pressable style={styles.buttonOther} onPress={() => navigation.navigate('VerificationID', {testResult: testResult})}> 
+            {image && <Pressable style={styles.buttonOther} onPress={() => navigation.navigate('VerificationID', {
+                                                                                              testResult: testResult, 
+                                                                                              firstClinic: firstClinic, 
+                                                                                              secondClinic: secondClinic})}> 
               <Text style={styles.buttonText}> Next for verification ID </Text>
             </Pressable>}
         </View>

@@ -39,13 +39,14 @@ import {
  * @return {*} screen view.
  */
 function DigitalCard({route, navigation}) {
-    const {testResult} = route.params;
+    const {firstClinicTest, secondClinicTest, testResult} = route.params;
     const [name, setName] = useState(''); 
     const [uid, setUID] = useState('');
 
     const [firstProvider, setfirstProvider] = useState(''); 
     const [firstDate, setfirstDate] = useState(''); 
     const [firstClinic, setFirstClinic] = useState('');
+    const [waitSecond, setWaitSecond] = useState(false);
 
     const [secondDoseCheck, setSecond] = useState(false); 
     const [secondProvider, setSecondProvider] = useState(''); 
@@ -106,11 +107,19 @@ function DigitalCard({route, navigation}) {
        
                     setfirstDate(data['1st'].date); 
                     setfirstProvider(data['1st'].provider);
-                    setFirstClinic(data['1st'].hosptal);
+                    if (data['1st'].hosptal == null) {
+                        setFirstClinic(firstClinicTest);
+                    } else {
+                        setFirstClinic(data['1st'].hosptal);
+                    }
     
                     setSecondDate(data['2nd'].date); 
                     setSecondProvider(data['2nd'].provider);
-                    setSecondClinic(data['2nd'].hosptal);
+                    if (data['2nd'].hosptal == null) {
+                        setSecondClinic(secondClinicTest);
+                    } else {
+                        setSecondClinic(data['2nd'].hosptal);
+                    }
     
                     if (secondProvider != null) {
                         setSecond(true);
@@ -124,7 +133,7 @@ function DigitalCard({route, navigation}) {
     /** Get user info from Firebase. */
     useEffect(() => {
         (async () => {
-                getUserInfo();
+                getUserInfo(); 
             })();
         }, []);
 
@@ -148,7 +157,7 @@ function DigitalCard({route, navigation}) {
                     <Title style={styles.textDose}>1st Dose</Title>
                         <Paragraph style={styles.textDetail}>Provider: {firstProvider}</Paragraph>
                         <Paragraph style={styles.textDetail}>Date: {handleTimeString(firstDate)}</Paragraph>
-                        <Paragraph style={styles.textDetail}>Clinic: {firstClinic}</Paragraph>
+                        <Paragraph style={styles.textDetail}>Clinic: {firstClinic }</Paragraph>
                 </View>
                 {secondDoseCheck && 
                     <View style={styles.miniContainerSecond}>

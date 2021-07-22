@@ -196,7 +196,6 @@ function Information({navigation}) {
         } else {
             testResult = 'Half vaccinated'
         }
-
         storageRef.set({
             '1st': {
                 provider: provider,
@@ -283,7 +282,10 @@ function Information({navigation}) {
             <Pressable style={styles.button} onPress={() => DoneUpload()}>
                 <Text style={styles.buttonText}>Next</Text>
             </Pressable>
-            <Pressable style={styles.buttonOther} onPress={() => navigation.navigate('LoginUser', {testResult: vaccinateResult})}>
+            <Pressable style={styles.buttonOther} onPress={() => navigation.navigate('LoginUser', {
+                                                                        testResult: vaccinateResult,
+                                                                        firstClinic: firstClinic, 
+                                                                        secondClinic: secondClinic})}>
                 <Text style={styles.buttonText}>Logout</Text>
             </Pressable>           
         </View>
