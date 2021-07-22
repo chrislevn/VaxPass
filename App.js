@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import 'react-native-gesture-handler';
 import { StyleSheet, Text, View } from 'react-native';
 
+// Stack Navigation
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -36,10 +36,13 @@ import Card from './screens/User/Card';
 import ID from './screens/User/ID';
 import Information from './screens/User/Information';
 
+
+/** Navigation container */
 const Stack = createStackNavigator();
 
+
+/** Authentication */
 const Auth = () => {
-  // Stack Navigator for Login and Sign up Screen
   return (
     <Stack.Navigator initialRouteName="LoginUser">
       <Stack.Screen
@@ -65,6 +68,8 @@ const Auth = () => {
   );
 };
 
+
+/** Setting app and navigation */
 function App() {
   return (
     <NavigationContainer>
@@ -88,5 +93,6 @@ function App() {
     </NavigationContainer>
   );
 }
+
 
 export default App;
