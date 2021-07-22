@@ -105,11 +105,11 @@ function DigitalCard({route, navigation}) {
             storageRef.on('value', (snapshot) => {
                 const data = snapshot.val();
    
-                setfirstDate(handleTimeString(data['1st'].date)); 
+                setfirstDate(data['1st'].date); 
                 setfirstProvider(data['1st'].provider);
                 setFirstClinic(data['1st'].hosptal);
 
-                setSecondDate(handleTimeString(data['2nd'].date)); 
+                setSecondDate(data['2nd'].date); 
                 setSecondProvider(data['2nd'].provider);
                 setSecondClinic(data['2nd'].hosptal);
 
@@ -140,14 +140,14 @@ function DigitalCard({route, navigation}) {
                 <View style={styles.miniContainerFirst}>
                     <Title style={styles.textDose}>1st Dose</Title>
                         <Paragraph style={styles.textDetail}>Provider: {firstProvider}</Paragraph>
-                        <Paragraph style={styles.textDetail}>Date: {firstDate}</Paragraph>
+                        <Paragraph style={styles.textDetail}>Date: {handleTimeString(firstDate)}</Paragraph>
                         <Paragraph style={styles.textDetail}>Clinic: {firstClinic}</Paragraph>
                 </View>
                 {secondDoseCheck && 
                     <View style={styles.miniContainerSecond}>
                         <Title style={styles.textDose}>2st Dose</Title>
                             <Paragraph style={styles.textDetail}>Provider: {secondProvider}</Paragraph>
-                            <Paragraph style={styles.textDetail}>Date: {secondDate}</Paragraph>
+                            <Paragraph style={styles.textDetail}>Date: {handleTimeString(secondDate)}</Paragraph>
                             <Paragraph style={styles.textDetail}>Clinic: {secondClinic}</Paragraph>
                     </View>}
                 <Pressable style={styles.button} onPress={() => navigation.navigate('Card')}>
