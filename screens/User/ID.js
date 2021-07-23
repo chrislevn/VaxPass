@@ -15,8 +15,12 @@
 import React, { Component, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button, Image, Pressable } from 'react-native';
 
-// Firebase database
+// Firebase database.
 import firebase from '../../database/firebase';
+
+// Crypto. 
+import cryptoProcess from '../../crypto/crypto';
+import * as Crypto from 'expo-crypto';
 
 
 /**
@@ -31,7 +35,11 @@ function ID({ navigation }) {
     useEffect(() => {
         (async () => {
             const user = firebase.auth().currentUser;   
-            const url = await firebase.storage().ref(`users/user-${user.uid}/id-${user.uid}`).getDownloadURL(); 
+            const digest = await Crypto.digestStringAsync(
+                Crypto.CryptoDigestAlgorithm.SHA256,
+                user.uid
+            );
+            const url = await firebase.storage().ref(`users/user-${digest}/id-${digest}`).getDownloadURL(); 
             
             setImage(url);
             }

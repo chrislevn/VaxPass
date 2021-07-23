@@ -24,6 +24,9 @@ import SelectDropdown from 'react-native-select-dropdown';
 // Firebase database.
 import firebase from '../../database/firebase';
 
+// Crypto
+import * as Crypto from 'expo-crypto';
+
 // Font
 import {
     useFonts,
@@ -188,7 +191,13 @@ function Information({navigation}) {
      */
     const UserUpload = async (firstDate, secondDate, firstHospital, secondHospital, provider) => {
         const user = firebase.auth().currentUser; 
-        const storageRef = firebase.database().ref().child(`users/` + `${user.uid}`);
+        // Prepare crytpo
+        const digest = await Crypto.digestStringAsync(
+            Crypto.CryptoDigestAlgorithm.SHA256,
+            user.uid
+        );
+
+        const storageRef = firebase.database().ref().child(`users/` + `${digest}`);
         var testResult = ''; 
 
         if (secondDate != null && secondHospital !=  null) {

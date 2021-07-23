@@ -18,6 +18,10 @@ import { StyleSheet, Text, View, TextInput, Alert, Pressable, ActivityIndicator 
 // Firebase databse.
 import firebase from '../../database/firebase';
 
+// Crypto
+import cryptoProcess from '../../crypto/crypto';
+import * as Crypto from 'expo-crypto';
+
 // Custom Fonts.
 import {
     useFonts,
@@ -82,7 +86,11 @@ function DashboardUser({navigation}) {
      */
     const UserUpload = async (currentDate, hospital, dose, provider) => {
         const user = firebase.auth().currentUser; 
-        const storageRef = firebase.database().ref().child(`users/` + `${user.uid}`);
+        const digest = await Crypto.digestStringAsync(
+            Crypto.CryptoDigestAlgorithm.SHA256,
+            user.uid
+          );
+        const storageRef = firebase.database().ref('users').child(cryptoProcess(digest));
         
         if (dose == '1st') {
             storageRef.update({
@@ -115,7 +123,7 @@ function DashboardUser({navigation}) {
      * Get user vaccine info from the Firebase
      * @param {*} code code from provider
      */
-    const getUserInfo = (code) => {
+    const getUserInfo = async (code) => {
         /** Storage reference from Firebase. */
         const storageRef = firebase.database().ref().child(`providers/` + `${currentDate}/` + `${code}`);
 
@@ -146,7 +154,7 @@ function DashboardUser({navigation}) {
      * Verify vaccine code and process to next screen.
      * @param {*} code the code provided by vaccine's hospital.
      */
-    const verify = (code) => { 
+    const verify = async (code) => { 
         (async () => {
             try {
                 getUserInfo(code);

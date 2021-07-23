@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, Share, Pressable, ActivityIndicator} from 'react-native';
+import { StyleSheet, Text, View, Button, Share, Pressable, ActivityIndicator, Alert} from 'react-native';
 import { Title, Paragraph } from 'react-native-paper';
 
 // Firebase database.
@@ -23,6 +23,10 @@ import firebase from '../../database/firebase';
 import { FontAwesome } from '@expo/vector-icons';
 // import QRCode from 'react-native-qrcode-svg';
 
+//Crypto
+import * as Crypto from 'expo-crypto';
+
+// Fonts
 import {
     useFonts,
     RobotoMono_400Regular,
@@ -95,34 +99,44 @@ function DigitalCard({route, navigation}) {
     }
 
     /** Retrieve user info */
-    const getUserInfo = () => {
-        firebase.auth().onAuthStateChanged(function(user){
+    const getUserInfo =  () => {
+        firebase.auth().onAuthStateChanged( async function(user){
             if (user) {
                 setName(user.displayName);
                 var uid = user.uid;
-                const storageRef = firebase.database().ref('users').child(uid);
+                // Prepare crypto
+                const digest = await Crypto.digestStringAsync(
+                    Crypto.CryptoDigestAlgorithm.SHA256,
+                    uid
+                );
 
-                storageRef.on('value', (snapshot) => {
-                    var data = snapshot.val();
-       
-                    setfirstDate(data['1st'].date); 
-                    setfirstProvider(data['1st'].provider);
-                    if (data['1st'].hosptal == null) {
-                        setFirstClinic(firstClinicTest);
+                const storageRef = firebase.database().ref('users').child(digest);
+
+                storageRef.on('value', async (snapshot) => {
+                    var data = await snapshot.val();
+
+                    if (data) {
+                        setfirstDate(data['1st'].date); 
+                        setfirstProvider(data['1st'].provider);
+                        if (data['1st'].hosptal == null) {
+                            setFirstClinic(firstClinicTest);
+                        } else {
+                            setFirstClinic(data['1st'].hosptal);
+                        }
+        
+                        setSecondDate(data['2nd'].date); 
+                        setSecondProvider(data['2nd'].provider);
+                        if (data['2nd'].hosptal == null) {
+                            setSecondClinic(secondClinicTest);
+                        } else {
+                            setSecondClinic(data['2nd'].hosptal);
+                        }
+        
+                        if (secondProvider != null) {
+                            setSecond(true);
+                        }
                     } else {
-                        setFirstClinic(data['1st'].hosptal);
-                    }
-    
-                    setSecondDate(data['2nd'].date); 
-                    setSecondProvider(data['2nd'].provider);
-                    if (data['2nd'].hosptal == null) {
-                        setSecondClinic(secondClinicTest);
-                    } else {
-                        setSecondClinic(data['2nd'].hosptal);
-                    }
-    
-                    if (secondProvider != null) {
-                        setSecond(true);
+                       
                     }
                   });
                 }

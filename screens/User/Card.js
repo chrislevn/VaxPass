@@ -18,6 +18,11 @@ import { StyleSheet, Text, View, Button, Image, Pressable } from 'react-native';
 // Firebase database
 import firebase from '../../database/firebase';
 
+// Crypto
+import cryptoProcess from '../../crypto/crypto';
+import * as Crypto from 'expo-crypto';
+
+
 // Fonts
 import {
     useFonts,
@@ -47,7 +52,11 @@ function Card({ navigation }) {
     useEffect(() => {
         (async () => {
             const user = firebase.auth().currentUser;   
-            const url = await firebase.storage().ref(`users/user-${user.uid}/card-${user.uid}`).getDownloadURL(); 
+            const digest = await Crypto.digestStringAsync(
+                Crypto.CryptoDigestAlgorithm.SHA256,
+                user.uid
+            );
+            const url = await firebase.storage().ref(`users/user-${digest}/card-${digest}`).getDownloadURL(); 
 
             setImage(url);
         })();
