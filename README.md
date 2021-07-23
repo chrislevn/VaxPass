@@ -1,8 +1,9 @@
 # VaxPass
 
 ![](https://i.imgur.com/bWzSJpQ.png)
+
 ## Description: 
-A cross-platform application to help you store your vaccination record and get approved anywhere you go. This project is a part of Techpoint's S.O.S Challenge 2021. 
+A cross-platform application to help you store your vaccination record and get approved anywhere you go. All of your data is secured with crypto technology. This project is a part of Techpoint's S.O.S Challenge 2021. 
 
 ## Installation: 
 1. Clone the repo and go to the directory
@@ -29,9 +30,9 @@ B. For provider, the screens includes:
 Submitting a [pull request](https://github.com/susam/gitpr#create-pull-request) 
 
 ## Credits: 
-@Christopher Le (tech)
+@Christopher Le (Tech)
 
-@Micheal Cruz (business)
+@Micheal Cruz (Business)
 
 ## License: 
 Apache License, Version 2.0, January 2004.                        http://www.apache.org/licenses/
