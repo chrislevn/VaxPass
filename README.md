@@ -5,6 +5,8 @@
 ## Description: 
 A cross-platform application to help you store your vaccination record and get approved anywhere you go. All of your data is secured with crypto technology. This project is a part of Techpoint's S.O.S Challenge 2021. 
 
+Our solution is an app that serves as a health passport to prove vaccination while also keeping data secure. Our app contains a secure blockchain powered by Ethereum that encrypts user's information, while also being accessible on any platform.
+
 ## Installation: 
 1. Clone the repo and go to the directory
 2. Run the following:
